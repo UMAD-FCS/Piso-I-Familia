@@ -1,0 +1,3790 @@
+
+---
+title: "**<br /> <br /> Familia y composición de los hogares **"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 1
+---
+
+<script>
+  $(document).ready(function() {
+    $head = $('#header');
+    $head.prepend('<img src="images/logo.png\" style=\"float: right;width: 400px;\"/>')
+  });
+</script>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(plotly))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(DT))
+suppressPackageStartupMessages(library(kableExtra))
+suppressPackageStartupMessages(library(dplyr))
+
+
+base        <- readxl::read_excel("Data/Base motor_familia.xls")
+base_fichas <- readxl::read_excel("Data/Fichas_Familia.xls")
+base_fichas <- base_fichas[order(base_fichas$ID),]
+
+```
+
+<br />
+
+<div style="text-align: justify">
+La [Unidad de Métodos y Acceso a Datos](https://umad.cienciassociales.edu.uy/) (UMAD) (FCS-UdelaR) a partir del [Observatorio Uruguay](https://umad.cienciassociales.edu.uy/observatorio-uruguay/) busca aportar a la difusión de conocimiento respecto a temas de interés general sobre la realidad social, económica y política del Uruguay. Esta serie de documentos tiene como objetivo presentar indicadores clave para el análisis de tendencias históricas del país que esperamos sean de utilidad para las comunidades académicas, los tomadores de decisión y los formadores de opinión, así como el público en general. Se presentan aquí indicadores sobre familia y composición de los hogares en el Uruguay durante las últimas décadas. 
+
+</div>
+
+<br />
+
+# Composición y estructura de los hogares 
+
+<br />
+
+<div style="text-align: justify">
+
+Siguiendo la definición del Instituto Nacional de Estadística, el concepto de hogar particular alude a la persona o conjunto de personas, unidas o no por relaciones de parentesco, que residen en una misma vivienda y comparten, al menos, los gastos de alimentación. Por su parte, la definición de familia refiere al conjunto de personas que conforma un hogar y en que al menos dos de sus integrantes tienen una relación de parentesco y/o consanguinidad. 
+A través del análisis de los hogares es posible aproximarse a la noción de familia, resultando relevante comprender la composición del hogar y los procesos y dinámicas que se producen en los mismos.
+		
+</div>
+
+<br />
+
+
+<div style="text-align: justify">
+
+La clasificación de los hogares según el tipo refleja la composición de los hogares según la relación de parentesco de sus integrantes. 
+
+* Hogar unipersonal: integrado por una sola persona. 
+* Hogar biparental con hijos: integrado por el padre y la madre (pareja unida o casada legalmente) y uno o más hijos. 
+* Pareja sin hijos: integrado por la pareja unida o casada legalmente sin hijos. 
+* Hogar monoparental femenino: integrado por la madre y uno o más hijos. 
+* Hogar monoparental masculino: integrado por el padre y uno o más hijos. 
+* Hogar extendido o compuesto con núcleo monoparental: constituido por un hogar monoparental que incluyen uno o más parientes o no parientes del jefe de hogar. 
+* Hogar extendido o compuesto con núcleo biparental: constituido por un hogar con núcleo biparental que incluyen uno o más parientes o no parientes del jefe de hogar.
+* Hogar sin núcleo: integrado por individuos no emparentados entre ellos.
+
+En 2020 se observa que 35,8% de los hogares están compuestos por una pareja con hijos/as, 18,1% son unipersonales, 17,9% compuestos por una preja sin hijos/as y 11,4% son monoparentales femeninos. En una menor proporción se encuentran los otros tipos de hogares. 
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 500,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares según tipo de hogar**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
+                     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 500,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+<div style="text-align: justify">
+El indicador de modelo de proveedor económico en hogares biparentales, como aproximación a la división sexual del trabajo, permite conocer la extensión de la jornada de trabajo remunerado de ambos miembros de la pareja[^1].  
+
+[^1]: Salvador y Pradere (2009) “Análisis de las trayectorias familiares y laborales desde una perspectiva de género y generaciones”, Proyecto G/INE/UNIFEM/UNFPA. 
+
+Se definen las categorías de la siguiente manera: 
+
+* Modelo de proveedor tradicional: pareja donde sólo el varón trabaja en el mercado laboral y la mujer es inactiva o desempleada. 
+* Modelo de proveedor modificado: pareja donde ambos trabajan para el mercado pero el varón trabaja a tiempo completo y la mujer a tiempo parcial. 
+* Modelo de doble carrera: pareja donde ambos trabajan remuneradamente, ambos a tiempo completo o ambos a tiempo parcial. 
+* Modelo de inversión de roles: pareja donde sólo la mujer trabaja para el mercado laboral y el varón es inactivo o desocupado. 
+* Modelo de inversión de roles modificado: el varón ocupado a tiempo parcial y mujer ocupada a tiempo completo. 
+* Modelo residual: ambos no trabajan (desocupados o inactivos).  
+
+A partir del gráfico es posible observar que entre 2006 y 2020 se produce una disminución del porcentaje de hogares con modelo de proveedor tradicional y, como contracara, un aumento del porcentaje de hogares con modelo de doble carrera. 
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 504,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares biparentales según modelo de proveedor económico**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)" ~ "Proveedor modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)" ~ "Doble carrera" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)" ~ "Inversión de roles",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)" ~ "Inversión de roles modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)" ~ "Proveedor modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)" ~ "Doble carrera" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)" ~ "Inversión de roles",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)" ~ "Inversión de roles modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(MODELO_PROVEEDOR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","MODELO_PROVEEDOR","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 504,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+
+<br />
+
+
+<div style="text-align: justify">
+El análisis del estado civil de las personas permite conocer aspectos vinculados a la nupcialidad, viudez, separaciones, así como dinámicas de la organización familiar. Las personas se clasifican en varias categorías: solteros, casados, unión libre, viudos, divorciados y separados.
+
+En el siguiente gráfico se observa que mientras el porcentaje de personas solteras, divorciadas o separadas y viudas se mantiene relativamente estable en el período presentado, el porcentaje de personas casadas diminuye en 8 puntos porcentuales, mientras el porcentaje de personas en unión libre aumenta en la misma magnitud.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 505,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de las personas según estado conyugal**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+
+
+g1 <- 
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)" ~ "Unión libre", 
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)" ~ "Unión libre", 
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(ESTADO_CIVIL = UNIDAD)
+
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","ESTADO_CIVIL","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 505,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+
+<br />
+
+
+
+<div style="text-align: justify">
+La jefatura de hogar es utilizada para identificar una persona de referencia en las Encuestas Continuas de Hogares para designar el parentesco con el resto de las personas integrantes del hogar. Ante esta pregunta, las interpretaciones que pueden dar los/as encuestados/as son diversas, resultando complejo delimitar el concepto de jefatura. A pesar de esta limitación, el análisis de la jefatura del hogar según sexo resulta un indicador relevante para aproximarnos a la organización familiar y las dinámicas de género en los hogares. 
+
+
+Es posible observar que el porcentaje de hogares con jefatura femenina aumenta 14 puntos porcentuales entre 2006 y 2020, pasando de 33,2% a 47,1%. Por su parte, puede verse que en el localidades mayores a 5.000 habitantes es donde el porcentaje de hogares con jefatura femenina es mayor, seguido por las localidades menores de 5.000 habitabtes y, luego, el área rural dispersa.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 508,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares según sexo del jefe/a**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+
+
+g1 <- 
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"|
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"~ "Varón", 
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)" ~ "Mujer"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Varón", "Mujer")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"|
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"~ "Varón", 
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)" ~ "Mujer"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Varón", "Mujer")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(SEXO_ANT = SEXO) %>%
+  rename(SEXO = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 508,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 508,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de los hogares con jefatura femenina, según región de residencia**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"),   
+FECHA>2005, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"|URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"|URBANORURALUY == "RURAL DISPERSO"|URBANORURALUY == "TOTAL PAÍS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+  URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"~"Urbano (Menos de 5.000 habitantes)", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"~"Urbano (Más de 5.000 habitantes)",URBANORURALUY == "RURAL DISPERSO"~ "Rural disperso", URBANORURALUY == "TOTAL PAÍS"~"Total país"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (Menos de 5.000 habitantes)", "Urbano (Más de 5.000 habitantes)", "Rural disperso", "Total país")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 4, color = UNIDAD))+
+ scale_color_manual(
+    values = c(639, "#a1dd70","orangered","lightslategrey")
+      ) +
+  ylim(0, 75) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+
+### Descargar Tabla
+         
+         
+```{r}
+t1 <- 
+base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"),  
+FECHA>2005, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"|URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"|URBANORURALUY == "RURAL DISPERSO"|URBANORURALUY == "TOTAL PAÍS") %>%
+mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+mutate(UNIDAD = case_when(
+URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"~"Urbano (Menos de 5.000 habitantes)", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"~"Urbano (Más de 5.000 habitantes)",URBANORURALUY == "RURAL DISPERSO"~ "Rural disperso", URBANORURALUY == "TOTAL PAÍS"~"Total país"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (Menos de 5.000 habitantes)", "Urbano (Más de 5.000 habitantes)", "Rural disperso", "Total país")))  %>%
+rename(UNIDAD_GEOGRÁFICA = URBANORURALUY) %>%
+rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","UNIDAD_GEOGRÁFICA","ANIO","VALOR")]
+t1 <- t1[order(t1$ANIO, t1$UNIDAD_GEOGRÁFICA), ]
+                           
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 508,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+<br />
+
+<div style="text-align: justify">
+El siguiente indicador permite conocer la composición de los hogares según las edades de sus integrantes, en particular, de niños y niñas entre 0 y 17 años, resultando relevante para conocer la carga de cuidados en los hogares, el número de personas en edad escolar, entre otros.
+
+El porcentaje de hogares en los que residen menores entre 0 y 17 años tiene una leve disminución del orden de 2 puntos porcentuales en el período. Sin embargo, esta tendencia es más acentuada  entre los hogares con jefatura masculina a la vez que presenta un sentido contrario para aquellos con jefatura femenina. Por su parte a medida que aumenta el quintil de ingresos, disminuye el porcentaje de hogares con menores entre 0 y 17 años.
+
+</div>
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 512,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad, según sexo del jefe/a del hogar**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 3, color = UNIDAD))+
+  scale_color_manual(
+    values = c(639, "#a1dd70", "darkorange"),
+    labels = c("Varones", "Mujeres", "Total")
+  ) +
+  ylim(0, 60) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO","ANIO","VALOR")]
+t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 512,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 512,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad, según quintil de ingresos**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+mutate(UNIDAD = case_when(
+QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 5, color = UNIDAD))+
+  scale_color_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60"),
+  ) +
+  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+mutate(UNIDAD = case_when(
+QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","QUINTIL","ANIO","VALOR")]
+t1 <- t1[order(t1$QUINTIL, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 512,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+<div style="text-align: justify">
+El siguiente indicador permite conocer la composición de los hogares según las edades de sus integrantes, en particular, de personas mayores de 65 años, resultando relevante para conocer la carga de cuidados en los hogares, el número de personas en edad jubilatoria, entre otras.
+
+El porcentaje de hogares con mayores presenta una leve disminución en el período 2006-2020. Por un lado, puede verse que esta disminución es más marcada para los hogares con jefatura femenina. Por otro, en los quintiles de ingresos más bajos es donde este porcentaje es menor, encontrándose un porcentaje similar en los quiniles 3, 4 y 5.  
+
+</div>
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 513,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de hogares en los que residen mayores de 64 años de edad, según sexo del jefe/a del hogar**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(CODIND==513, NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 3, color = UNIDAD))+
+  scale_color_manual(
+    values = c(639, "#a1dd70", "darkorange"),
+    labels = c("Varones", "Mujeres", "Total")
+  ) +
+  ylim(0, 60) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO","ANIO","VALOR")]
+t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 513,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 513,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de hogares en los que residen mayores de 64 años de edad, según quintil de ingresos**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+mutate(UNIDAD = case_when(
+QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 5, color = UNIDAD))+
+  scale_color_manual(
+    values = c("darkorange", 639,"#a1dd70","darksalmon","grey60"),
+  ) +
+  ylim(0, 60) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+mutate(UNIDAD = case_when(
+QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","QUINTIL","ANIO","VALOR")]
+t1 <- t1[order(t1$QUINTIL, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 513,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+
+
+<div style="text-align: justify">
+
+La salida del hogar de origen representa uno de los eventos de transición a la adultez, marcando la conformación de un hogar propio. 
+
+Es posible observar que el porcentaje de adolescentes y jóvenes que nunca se fueron de su hogar de origen alcanza el 62% tanto en 2008 como en 2013 y asciende a 66% en 2018. Por su parte, 29%, 28% y 24% se fueron de su hogar de origen y no retornaron en 2008, 2013 y 2018, respectivamente. Por último, 10% de adolescentes y jóvenes se fueron de su hogar de origen y volvieron, para los tres años considerados.
+
+Al analizar este porcentaje según sexo, se observa que el porcentaje de mujeres que se fueron de su hogar de origen y no volvieron es mayor que el porcentaje de varones para los tres años. En 2018, 28,5% de mujeres adolescentes y jóvenes se fueron de su hogar de origen sin haber vuelto, mientras para los varones este porcentaje desciende a 19,5%.
+
+</div>
+
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2008", ",", "2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((CODIND==518), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2008", "2013", "2018")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("indianred2", "darkorange", 639), guide = "none"
+    
+  ) +
+  #  ylim(0, 100) +
+  scale_x_discrete(   labels = c("2008", "2013", "2018")) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((CODIND==518), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 518,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2008", ",", "2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen, según sexo**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((CODIND==518), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2008", "2013", "2018")))  %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  facet_wrap(~SEXO) +
+  scale_fill_manual(
+    values = c("indianred2", "darkorange", 639), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_discrete(   labels = c("2008", "2013", "2018")) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((CODIND==518), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
+                            NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 518,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+# Planificación familiar
+
+<br />
+
+<div style="text-align: justify">
+
+El concepto de planificación familiar se asocia a los derechos de salud sexual y reproductiva. Los beneficios de la planificación familiar se vinculan con la reducción de embarazos no deseados, de muerte materna, la mejora de la salud infantil y de la calidad y nivel de vida de las personas, entre otros. 
+
+</div>
+
+<br />
+<div style="text-align: justify">
+
+El siguiente indicador da cuenta del grado de cumplimiento de las preferencias reproductivas, vinculado a si deseaban o no tener hijos y el momento. Es posible observar que 7% de las personas que ellas o sus parejas quedaron embarazadas no querían tener hijos/as, en el entorno de 30% quería más adelante y casi 65% quería en ese momento. No se observan grandes diferencias según sexo.  
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2015" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de personas entre 15 y 44 años de edad que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían, según sexo**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)"|
+                     NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)"|
+                     NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)"), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)" ~ "Quería en ese momento",
+                            NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)" ~ "Quería más adelante",
+                            NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)" ~ "No quería")) %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Quería en ese momento", "Quería más adelante", "No quería")))  %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("indianred2", "darkorange", 639), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  #scale_x_discrete(labels = c("Varones", "Mujeres", "Total")) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)"|
+                     NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)"|
+                     NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)"), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)" ~ "Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería en ese momento)",
+                            NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)" ~ "orcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)",
+                            NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)" ~ "Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)")) %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  rename(ANIO = FECHA) 
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "SEXO", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 525,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+
+<br />
+
+<div style="text-align: justify">
+
+Este indicador da cuenta del grado de cumplimiento de las preferencias reproductivas, vinculado a la cantidad de hijos tenidos y deseados. Es posible observar que la mitad de las personas manifiestan haber tenido la cantidad de hijos/as que deseaban. 
+
+</div>
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2015" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de personas según cantidad de hijos tenidos y deseados, según sexo**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+#===============================================================================
+
+
+
+                   
+                   
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)"|
+                     NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)"|
+                     NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)"), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)" ~ "Menor cantidad de hijos tenidos que deseados",
+NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)" ~ "Igual cantidad de hijos tenidos que deseados",
+NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)" ~ "Mayor cantidad de hijos tenidos que deseados")) %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("indianred2", "darkorange", 639), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  #scale_x_discrete(labels = c("Varones", "Mujeres", "Total")) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)"|
+                     NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)"|
+                     NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)"), 
+                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Menor cantidad de hijos tenidos que deseados)",
+NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Igual cantidad de hijos tenidos que deseados)",
+NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Mayor cantidad de hijos tenidos que deseados)")) %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 526,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+<br />
+
+<div style="text-align: justify">
+
+Este indicador da cuenta del grado de cumplimiento de las preferencias reproductivas, vinculado al momento en que tuvieron el primer hijo y en que hubiesen preferido tenerlo. Puede verse que 40% de las personas tuvieron su primer hijo/a a la edad que deseaban tenerlo (este porcentaje es de 39% para las mujeres y 44% para los varones). Cabe destacar que mientras 37% de los varones tuvieron su primer hijo antes de lo que querían, este porcentaje aumenta a 47% para el caso de las mujeres. 
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2015" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener, según sexo**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+#===============================================================================
+
+
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)"|
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)"|
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)" ~ "Antes de lo que quería",
+NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)" ~ "A la edad que quería",
+NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)" ~ "Después de lo que quería")) %>%
+#mutate(UNIDAD = factor(UNIDAD, levels = c("Quería en ese momento", "Quería más adelante", "No quería")))  %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("indianred2", "darkorange", 639), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  #scale_x_discrete(labels = c("Varones", "Mujeres", "Total")) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)"|
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)"|
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (Antes de lo que quería)",
+NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (A la edad que quería)",
+NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (Después de lo que quería)")) %>%
+  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 527,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+<div style="text-align: justify">
+
+La tasa específica de fecundidad adolescente es un indicador que da cuenta de la evolución del embarazo adolescente. Este indicador presenta un aumento de 10 puntos porcentuales entre 1996 y 2013, pasado de 70,5 a 60,9 cada mil mujeres entre 15 y 19 años. A partir de dicho año y hasta 2020, se asiste a una disminución marcada y sostenida, alcanzando en 2020 el valor de 28 cada mil mujeres entre 15 y 19 años de edad.    
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 529,]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa específica de fecundidad adolescente**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter(CODIND==529) %>%
+  mutate(UNIDAD = case_when(NOMINDICADOR == "Tasa específica de fecundidad adolescente"  ~  "Total")) %>%  
+  mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 1, color = UNIDAD))+
+ scale_color_manual(
+    values = c(639)) +
+  ylim(0, 75) +
+  scale_x_continuous(breaks=seq(1996, 2020, 2)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(CODIND==529) %>%
+  mutate(UNIDAD = case_when(NOMINDICADOR == "Tasa específica de fecundidad adolescente"  ~  "Total")) %>%  
+  mutate(VALOR = round(as.numeric(VALOR),1)) %>% 
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","UNIDAD", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 529,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+# Violencia de género
+
+ 
+
+<div style="text-align: justify">
+
+La violencia de género se ha conceptualizado como toda forma de violencia dirigida hacia las mujeres por el hecho de ser mujeres. La ONU (1993)[^2] la define como diferentes actos violentos, o amenazas de dichos actos ejercidos contra las mujeres por el hecho de serlo, que generan o pueden generar un daño físico, sexual o psicológico. A partir de la convención interamericana para prevenir, sancionar y erradicar la violencia contra la mujer "Convención de Belem do Pará" se define la violencia de género como “cualquier acción o conducta, basada en su género, que cause muerte, daño o sufrimiento físico, sexual o psicológico a la mujer, tanto en el ámbito público como en el privado” (Convención Belém Do Pará, 1994)[^3]. Existen diferentes criterios para clasificar la violencia. Dos criterios relevantes son el espacio donde se produce (ámbito privado, laboral, educativo, social, entre otros) y el tipo de violencia que se ejerce (psicológica, física, sexual, entre otras).
+
+[^2]: ONU (1993). Declaración sobre la eliminación de la violencia contra la mujer. Asamblea General, Naciones Unidas. Distr. General A/RES/48/104. Disponible en: https://www.acnur.org/fileadmin/Documentos/BDL/2002/1286.pdf?file=fileadmin/Documentos/BDL/2002/1286  
+[^3]: Convención Belém do Pará (1994). Convención interamericana para prevenir, sancionar y erradicar la violencia contra la mujer. Disponible en: https://www.oas.org/juridico/spanish/tratados/a-61.html 
+
+</div>
+<div style="text-align: justify">
+
+Los siguientes indicadores permiten conocer la prevalencia de diferentes tipos de violencia por parte de la familia en diferentes etapas del ciclo vital: aquellas situaciones vividas antes de los 15 años, en la actualidad o aquellas vividas a partir de los 65 años de edad. A su vez, se presenta la violencia vivida por parte de la pareja o expareja. En los indicadores se incluye la violencia física, psicológica, sexual, digital y económica. 
+
+34,2% de las mujeres 15 años o más manifestaron haber vivido situaciones de  violencia de género por parte de la familia en la infancia en 2013, prevalencia que asciende a 38,4% en 2019, observándose que el tipo de violencia que presenta una mayor prevalencia es la violencia física, seguido de la psicológica y, por último, la sexual.  
+
+
+</div>
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013", "y", "2019" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Prevalencia de violencia basada en género por parte de la familia en la infancia**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)"
+), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)" ~ "Sexual",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)" ~ "Física"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Física", "Psicológica", "Sexual")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill = UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("grey60", "darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 40) +
+  scale_x_discrete(   labels = c("Total", "Física", "Psicológica", "Sexual")) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100))
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)"
+), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)" ~ "Sexual",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)" ~ "Física"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Física", "Psicológica", "Sexual")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 535,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+
+<div style="text-align: justify">
+
+En el entorno del 20% de las mujeres de 15 años o más vivieron situaciones de violencia por parte de su familia actual en los últimos 12 meses, observando que en prácticamente todos los casos se vivió violencia psicológica. 
+
+</div>
+
+
+<br />
+<div style="text-align: center">
+
+
+
+```{r}
+periodo <- c("2013", "y", "2019" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Prevalencia de violencia basada en género por parte de la familia actual**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)"
+), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)" ~ "Física"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Psicológica", "Económica", "Física")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("grey60", "darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 30) +
+  scale_x_discrete(   labels = c("Total", "Psicológica", "Económica", "Física")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)"
+), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)" ~ "Física"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Física", "Psicológica", "Económica")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 536,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+<div style="text-align: justify">
+
+En el siguiente gráfico puede observarse que 9,5% de las mujeres de 65 años o más vivieron violencia de género en los últimos 12 meses en 2013, porcentaje que asciende a 10,5% en 2019. 
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013", "y", "2019" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Prevalencia de violencia basada en género de mujeres de 65 años o más por parte de la familia **
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((CODIND==537), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=FECHA)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkseagreen4", "darkseagreen3"), guide = "none"
+  ) +
+  ylim(0, 20) +
+  scale_x_discrete(   labels = c("2013", "2019")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((CODIND==537), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 537,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<div style="text-align: justify">
+
+La violencia de género por parte de la pareja o expareja en los últimos 12 meses alcanza a 23,7% y 20,5% de las mujeres de 15 años o más que tienen o han tenido pareja en 2013 y 2019, respectivamente. En este caso, el tipo de violencia con una mayor prevalencia es la violencia psicológica.  
+
+
+</div>
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013", "y", "2019" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Prevalencia de violencia basada en género por parte de la pareja o expareja, en los últimos 12 meses**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)"), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)" ~ "Física",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)" ~ "Sexual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Psicológica", "Económica", "Física", "Sexual")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("grey60", "darkseagreen2", "darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 30) +
+  scale_x_discrete(   labels = c("Total", "Psicológica", "Económica", "Física", "Sexual")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)"), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)" ~ "Física",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)" ~ "Sexual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Física", "Psicológica", "Sexual", "Económica")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 538,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<div style="text-align: justify">
+
+Por su parte, puede observarse que del total de mujeres de 15 años o más que tienen o han tenido pareja, 45,4% y 48,7% (en 2013 y 2019, respectivamente) vivieron violencia de género por parte de la pareja o expareja a lo largo de toda la vida. El tipo de violencia con una mayor prevalencia es la violencia psicológica. 
+
+</div>
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2013", "y", "2019" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Prevalencia de violencia basada en género por parte de la pareja o expareja, a lo largo de toda la vida**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)"), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)" ~ "Física",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)" ~ "Sexual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Psicológica", "Económica", "Física", "Sexual")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("grey60", "darkseagreen2", "darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 50) +
+  scale_x_discrete(   labels = c("Total", "Psicológica", "Económica", "Física", "Sexual")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)"|
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)"), 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)" ~ "Total",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)" ~ "Psicológica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)" ~ "Económica",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)" ~ "Física",
+NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)" ~ "Sexual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Total", "Física", "Psicológica", "Sexual", "Económica")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 539,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<br />
+
+# Cuidados y educación
+
+ 
+<br />
+
+<div style="text-align: justify">
+
+Se definen los cuidados como las actividades que se realizan con el fin de ayudar a una persona en situación de dependencia en el desarrollo de su vida diaria. Implica cuidados materiales o económicos y psicológicos, involucrando vínculos afectivos. Las actividades de cuidado pueden realizarse de forma remunerada o no remunerada, en el marco de la familia o por fuera (Letablier, 2001[^4]; Aguirre et al, 2014[^5]). 
+
+La organización social del cuidado refiere a la forma de distribuir las actividades de cuidados de las personas en situación de dependencia en una sociedad, interviniendo cuatro actores en la provisión de los cuidados: familia, Estado, mercado y comunidad. Según cómo se estructura la organización del cuidado es posible diferenciar regímenes de bienestar familistas, cuando la responsabilidad principal por la provisión de cuidados recae en las familias, y desfamiliarizados, cuando hay una delegación sustancial de las actividades de cuidado en el Estado y el mercado (Aguirre, 2008[^6]).
+
+[^4]: Letablier, Marie-Thérèse (2001). Le travail centré sur autrui e sa conceptualisation en Europe. En Travail, genre et societés. Dossier: Femmes providentielles, enfants et parents à charge, Nº 6, Paris: L' Harmattan, pp. 19-41
+[^5]: Aguirre, Rosario, Batthyány, Karina, Genta, Natalia y Perrotta, Valentina (2014). Los cuidados en la agenda de investigación y en las políticas públicas en Uruguay. Íconos. Revista de Ciencias Sociales. Nº 50, septiembre 2014, pp. 43-60. Quito: Facultad Latinoamericana de Ciencias Sociales-Sede Académica de Ecuador. Disponible en: https://www.redalyc.org/pdf/509/50931716003.pdf
+[^6]: Aguirre, Rosario (2008). La necesaria redefinición de la noción de trabajo. Problemas conceptuales y metodológicos. Aportes para el Estado y la Administración Gubernamental, Año 14, Nº 25, Buenos Aires. Disponible en: https://www.asociacionag.org.ar/pdfaportes/25/02.pdf 
+
+Por su parte, se presentan indicadores de asistencia a la educación inicial, preescolar y escolar, comprendiéndose como un factor fundamental en la integración social de los niños y niñas y su desarrollo.
+
+
+</div>
+
+<br />
+
+<div style="text-align: justify">
+
+Los siguientes indicadores reflejan la distribución de las tareas de cuidados entre personas familiares o no familiares, pudiendo comprender las diferencias por sexo y rol de parentesco, tanto cotidianamente como cuando surgen emergentes que es necesario atender.  
+
+Al analizar la participación de las personas en los cuidados de los niños/as fuera del horario escolar, se observa que quien tiene una mayor participación son las madres, alcanzando casi al 100%, tanto en 2013 como en 2018. En segundo lugar, le siguen los padres, aumentando su participación desde 60,6% en 2013 a 79,7% en 2018. En tercer lugar, la participación de las/os abuelas/os se ubica en el entorno de 40%. En menor medida se encuentran otros parientes y no parientes, hermanos/as y personas remuneradas.      
+</div>
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Participación de personas en el cuidado de niños/as fuera del horario escolar**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Hermano/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)" ~ "Madre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)" ~ "Padre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Hermano/a)" ~ "Hermano/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)" ~ "Abuelo/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)" ~ "Otro pariente o no pariente",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)" ~ "Persona remunerada"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Madre", "Padre", "Abuelo/a", "Otro pariente o no pariente", "Hermano/a", "Persona remunerada")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkolivegreen4", "darkseagreen4", "darkseagreen", "darkseagreen3", "darkseagreen2", "darkseagreen1"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 100) +
+  scale_x_discrete(   labels = c("Madre", "Padre", "Abuelo/a", "Otro pariente o no pariente", "Hermano/a", "Persona remunerada")) +
+  theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Hermano/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)" ~ "Madre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)" ~ "Padre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Hermano/a)" ~ "Hermano/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)" ~ "Abuelo/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)" ~ "Otro pariente o no pariente",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)" ~ "Persona remunerada"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Madre", "Padre", "Hermano/a", "Abuelo/a", "Otro pariente o no pariente", "Persona remunerada")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 547,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+<div style="text-align: justify">
+Cuando los niños/as enferman quienes principalmente se encargan del cuidado son las madres, con una participación de 93%. Los padres, por su parte, participan en un 55%. En tercer lugar, le siguien las/os abuelas/os, con una participación que desciende de 46,6% en 2013 a 31,6% en 2018. 
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Personas que participan en el cuidado de niños/as cuando enferman**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Hermano/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)" ~ "Madre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)" ~ "Padre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Hermano/a)" ~ "Hermano/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)" ~ "Abuelo/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)" ~ "Otro pariente o no pariente",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)" ~ "Persona remunerada"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Madre", "Padre", "Abuelo/a", "Otro pariente o no pariente", "Persona remunerada", "Hermano/a")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkolivegreen4", "darkseagreen4", "darkseagreen", "darkseagreen3", "darkseagreen2", "darkseagreen1"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 100) +
+  scale_x_discrete(   labels = c("Madre", "Padre", "Abuelo/a", "Otro pariente o no pariente", "Persona remunerada", "Hermano/a")) +
+  theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Hermano/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)"|
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)" ~ "Madre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)" ~ "Padre",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Hermano/a)" ~ "Hermano/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)" ~ "Abuelo/a",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)" ~ "Otro pariente o no pariente",
+NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)" ~ "Persona remunerada"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Madre", "Padre", "Hermano/a", "Abuelo/a", "Otro pariente o no pariente", "Persona remunerada")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 548,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<div style="text-align: justify">
+La tasa de participación de las mujeres en las actividades de cuidados es mayor que la de los varones para todas las subpoblaciones consideradas. La tasa más alta se alcanza para el cuidado de niños/as de 0 a 3 años de edad, alcanzando el 90% para las mujeres y 68% para los varones.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013")
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa de participación en las actividades de cuidados dentro del hogar**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 4 a 5 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "Mujeres"|SEXO=="Varones", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)" ~ "Personas con discapacidad",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)" ~ "Niños/as de 0 a 3 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 4 a 5 años)" ~ "Niños/as de 4 a 5 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)" ~ "Niños/as de 6 a 12 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)" ~ "Mayores de 65 años"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres" ~ "Mujeres", SEXO=="Varones" ~ "Varones")) %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Niños/as de 0 a 3 años", "Niños/as de 4 a 5 años", "Niños/as de 6 a 12 años", "Personas con discapacidad", "Mayores de 65 años")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013")))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c( "darkseagreen1", "darkseagreen2", "darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~SEXO) +
+  ylim(0, 100) +
+  scale_x_discrete(   labels = c("Niños/as de 0 a 3 años", "Niños/as de 4 a 5 años", "Niños/as de 6 a 12 años", "Personas con discapacidad", "Mayores de 65 años")) +
+  theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 4 a 5 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 12 años)"|
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)", 
+URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)" ~ "Personas con discapacidad",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)" ~ "Niños/as de 0 a 3 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 4 a 5 años)" ~ "Niños/as de 4 a 5 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)" ~ "Niños/as de 6 a 12 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 12 años)" ~ "Niños/as de 0 a 12 años",
+NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)" ~ "Mayores de 65 años"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Niños/as de 0 a 3 años", "Niños/as de 4 a 5 años", "Niños/as de 6 a 12 años", "Niños/as de 0 a 12 años", "Personas con discapacidad", "Mayores de 65 años")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 549,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<br />
+
+<div style="text-align: justify">
+Los siguientes indicadores dan cuenta de la asistencia a centros de cuidado y educación por parte de niños y niñas entre 0 y 5 años de edad. Es posible observar que tanto la asistencia de niños/as entre 0 y 2 años como entre 3 y 5 años aumenta en los períodos considerados. En el caso de los niños/as de 0 a 2 años puede verse que el porcentaje de asistencia pasa de 27,1% en 2012 a 38% en 2019. Por su parte, el porcentaje de asistencia de niños/as de 3 a 5 años aumenta de 55,7% en 1990 a 89,1% en 2020. 
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 551,]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años**
+##### Total país, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 1, color = NOMINDICADOR))+
+  scale_color_manual(
+    values = c("darkorange")) +
+  ylim(0, 50) +
+  scale_x_continuous(breaks=seq(2012, 2019, 1), limits=c(2012,2019))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 551,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 552,]
+#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa de asistencia a la educación de niños/as de 3 a 5 años**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 1, color = NOMINDICADOR))+
+  scale_color_manual(
+    values = c("darkorange")) +
+  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(1990, 2020, 2), limits=c(1990,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 552,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+
+<br />
+
+# Salud infantil
+
+ 
+<br />
+
+<div style="text-align: justify">
+
+La salud infantil refiere a la posibilidad de que los niños y niñas puedan satisfacer sus necesidades, desarrollar su potencial y sus capacidades. Es un aspecto fundamental que contribuye al bienestar y desarrollo integral de niños y niñas.
+
+
+</div>
+<br />
+
+<div style="text-align: justify">
+
+El indicador refleja el porcentaje de niños que en sus primeros 6 meses reciben lactancia exclusiva, recomendado por la OMS para la buena nutrición de los bebés en los primeros años de vida. Se puede observar que el porcentaje de niños/as que recibieron lactancia exclusiva hasta los 6 meses pasó de 50% en 2013 a 57% en 2018, no encontrándose diferencias sustanciales entre Montevideo y el Interior del país.     
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses**
+##### País urbano, `r periodo_formatted`
+
+</div>
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+
+
+#===============================================================================
+g1<-
+  base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
+URBANORURALUY == "TOTAL PAÍS"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 75) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100))
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
+URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 555,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<br />
+
+<div style="text-align: justify">
+
+El indicador refleja el porcentaje de niños con bajo peso al nacer, es decir, por debajo de 2500 g. Es un indicador sumamente relevante en tanto repercute en el desarrollo y crecimiento satisfactorios, observándose que el mismo se ubica en el entorno del 7%.    
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- c("2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de nacidos vivos con bajo peso al nacer**
+##### País urbano, `r periodo_formatted`
+
+</div>
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
+URBANORURALUY == "TOTAL PAÍS"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none") +
+  facet_wrap(~FECHA) +
+  ylim(0, 15) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100)) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
+URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 556,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+<div style="text-align: justify">
+
+El indicador refleja el porcentaje de niños con peso elevado al nacer, es decir, por encima de 4000 g. Es un indicador relevante en tanto puede ocasionar problemas en la salud durante y después del parto. Este indicador presenta una disminución en 2018 (8%) respecto a 2013 (11%). 
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- c("2013", "y", "2018" )
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de nacidos vivos con macrosomía**
+##### País urbano, `r periodo_formatted`
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
+URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
+  ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.3)+
+  scale_fill_manual(
+    values = c("darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none"
+  ) +
+  facet_wrap(~FECHA) +
+  ylim(0, 15) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
+URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+URBANORURALUY=="Montevideo" ~ "Montevideo",
+URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
+#t1 <- t1[order(t1$SEXO, t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 557,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+<br />
+
+<div style="text-align: justify">
+El siguiente indicador da cuenta del porcentaje de niños y niñas que no tienen ningún tipo de cobertura en salud. Por un lado, puede verse que el porcentaje de niños/as sin cobertura es mayor a medida que aumenta el tramo de edad considerado, en particular, hasta 2010. A su vez, se observa una disminunción marcada de los niños/as sin cobertura de salud para los tres tramos de edad considerados a lo largo del período, llegando a niveles menores al 1% a partir de 2013.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 563,]
+#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- 1991
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Porcentaje de niños entre 0 y 17 años sin cobertura de salud**
+##### País urbano, `r periodo_formatted`
+</div>
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud"|
+NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud"|
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", FECHA>1990, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud" ~ "Entre 0 y 5 años",
+NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud" ~ "Entre 6 y 12 años",
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud" ~ "Entre 13 y 17 años"))  %>%
+    mutate(UNIDAD = factor(UNIDAD, levels = c("Entre 0 y 5 años", "Entre 6 y 12 años", "Entre 13 y 17 años")))  %>%
+ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 6, color = UNIDAD))+
+  scale_color_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3")) +
+  ylim(0, 15) +
+  scale_x_continuous(breaks=seq(1991, 2020, 2), limits=c(1991,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud"|
+NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud"|
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", FECHA>1990, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud" ~ "Entre 0 y 5 años",
+NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud" ~ "Entre 6 y 12 años",
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud" ~ "Entre 13 y 17 años"))  %>%
+    mutate(UNIDAD = factor(UNIDAD, levels = c("Entre 0 y 5 años", "Entre 6 y 12 años", "Entre 13 y 17 años")))  %>%
+  rename(ANIO = FECHA)  %>%
+  rename(TRAMO_EDAD=UNIDAD)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "TRAMO_EDAD", "ANIO","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 563,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
