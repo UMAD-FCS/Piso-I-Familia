@@ -221,6 +221,471 @@ cita_formatted <- paste(
 <br />
 
 
+
+
+
+
+<div style="text-align: justify">
+
+Al analizar la distribución de los hogares según quintil de ingresos se encuentran diferencias marcadas. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares unipersonales y de pareja sin hijos, mientras disminuye el porcentaje de hogares biparentales, monoparentales femeninos y extendidos o compuestos (con o sin núcleo monoparental).  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 500,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+periodo <- c(max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares según tipo de hogar, por quintil de ingresos**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","QUINTIL","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 500,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+<br />
+
+
+
+<div style="text-align: justify">
+En el siguiente gráfico puede observarse que en 2020 la mayoría de hogares en los que residen menores de 15 años son biparentales (65%), seguido de hogares monoparentales femeninos (13%) y de extendidos o compuestos (12%). 
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 516,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de hogares con menores de 15 años según tipo de hogar **
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 516,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+<div style="text-align: justify">
+
+Al analizar la distribución de los hogares con menores de 15 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del quintil 1 a 80,9% en los del quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 500,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+periodo <- c(max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares con menores de 15 años según tipo de hogar, por quintil de ingresos**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","QUINTIL","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 516,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
+
+
 <div style="text-align: justify">
 El indicador de modelo de proveedor económico en hogares biparentales, como aproximación a la división sexual del trabajo, permite conocer la extensión de la jornada de trabajo remunerado de ambos miembros de la pareja[^1].  
 
@@ -370,6 +835,156 @@ cita_formatted <- paste(
 `r cita_formatted` 
 
 <br />
+
+
+
+
+
+
+
+<div style="text-align: justify">
+
+Considerando el modelo de proveedor de los hogares según el quintil de ingresos hay dos aspectos a destacar. Por un lado, el porcentaje de hogares con modelo de proveedor tradicional disminuye a medida que aumentan los ingresos de los hogares, pasando de 45,5% en los hogares del primer quintil de ingresos a 9,9% en los del quinto quintil. Del otro lado, los hogares con modelo de doble carrera aumentan el porcentaje conforme aumenta el quintil de ingresos (17,0% en el primer quintil y 37,3% en el quinto quintil).   
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 504,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+periodo <- c(max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares biparentales según modelo de proveedor económico, por quintil de ingresos**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)" ~ "Proveedor modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)" ~ "Doble carrera" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)" ~ "Inversión de roles",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)" ~ "Inversión de roles modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
+    mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor modificado)" ~ "Proveedor modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)" ~ "Doble carrera" ,
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)" ~ "Inversión de roles",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)" ~ "Inversión de roles modificado",
+    NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
+    mutate(QUINTIL = case_when(
+    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  rename(MODELO_PROVEEDOR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","MODELO_PROVEEDOR","QUINTIL","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 504,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
+
+
 
 
 
@@ -2674,6 +3289,153 @@ Por su parte, se presentan indicadores de asistencia a la educación inicial, pr
 
 <br />
 
+
+<div style="text-align: justify">
+
+Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y varones entre 14 y 49 años de edad según presencia de menores en el hogar. Es posible observar que la brecha en la tasa de participación entre mujeres y varones aumenta cuando conviven con niños de menor edad, encontrándose una mayor brecha para mujeres y varones que viven con niños/as de 0 a 3 años. Sin embargo, cabe mencionar que la brecha se reduce entre 2006 y 2020 para los tres tramos de edad considerados.     
+
+
+</div>
+<br />
+<div style="text-align: center">
+
+
+
+```{r}
+periodo <- base[base$CODIND == 542,]
+periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+max<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa de participación de mujeres y varones entre 14 y 49 años según presencia de menores en el hogar**
+##### Total país, `r periodo_formatted`
+</div>
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)"| 
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>%
+  rename(SEXO_ANT=SEXO) %>%
+  mutate(SEXO = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)" ~ "Varones", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)" ~ "Mujeres"))  %>%
+    mutate(EDAD = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Entre 0 y 3",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)" ~ "Entre 0 y 3", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)" ~ "Entre 0 y 6",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)" ~ "Entre 0 y 6", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)" ~ "Entre 0 y 12",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)" ~ "Entre 0 y 12",  NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)" ~ "Sin menores entre 0 y 12", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)" ~ "Sin menores entre 0 y 12"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Varones", "Mujeres")))  %>%
+  mutate(EDAD = factor(EDAD, levels = c("Entre 0 y 3", "Entre 0 y 6", "Entre 0 y 12", "Sin menores entre 0 y 12")))  %>%
+ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 2, color = SEXO))+
+  scale_color_manual(
+    values = c("darkorange", 639)) +
+    facet_wrap(~EDAD) +
+  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)"| 
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)"|
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>%
+  rename(SEXO_ANT=SEXO) %>%
+  mutate(SEXO = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)" ~ "Varones",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)" ~ "Mujeres", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)" ~ "Varones", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)" ~ "Mujeres"))  %>%
+    mutate(EDAD = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Entre 0 y 3",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Mujer)" ~ "Entre 0 y 3", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Varón)" ~ "Entre 0 y 6",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 7 en el hogar (Mujer)" ~ "Entre 0 y 6", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)" ~ "Entre 0 y 12",
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)" ~ "Entre 0 y 12",  NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)" ~ "Sin menores entre 0 y 12", NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)" ~ "Sin menores entre 0 y 12"))  %>%
+  mutate(SEXO = factor(SEXO, levels = c("Varones", "Mujeres")))  %>%
+  mutate(EDAD = factor(EDAD, levels = c("Entre 0 y 3", "Entre 0 y 6", "Entre 0 y 12", "Sin menores entre 0 y 12"))) %>%
+  rename(ANIO = FECHA)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "SEXO", "EDAD", "ANIO","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 542,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+
+
+<br />
+
 <div style="text-align: justify">
 
 Los siguientes indicadores reflejan la distribución de las tareas de cuidados entre personas familiares o no familiares, pudiendo comprender las diferencias por sexo y rol de parentesco, tanto cotidianamente como cuando surgen emergentes que es necesario atender.  
@@ -3788,3 +4550,122 @@ cita_formatted <- paste(
 `r cita_formatted` 
 
 <br />
+
+
+<div style="text-align: justify">
+El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 año y menores de 5 años cada 1000 habitantes. Es posible observar que desde 1984 hasta 2020 ambas tasas se han reducido sustancialmente. La tasa de mortalidad para niños/as menores de 1 año pasa de 30,1 a 6,2 en el período considerado, mientras la tasa de mortalidad para niños/as menores de 5 años pasa de 34,1 a 6,9. 
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+```{r}
+periodo <- base[base$CODIND == 564,]
+#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Tasa de mortalidad infantil (menores de 1 año y de 5 años)**
+##### Total país, `r periodo_formatted`
+</div>
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+
+
+```{r, out.width='100%'}
+#===============================================================================
+g1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)"|
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR)),1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)" ~ "Menor de 1 año",
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)" ~ "Menor de 5 años"))  %>%
+    mutate(UNIDAD = factor(UNIDAD, levels = c("Menor de 1 año", "Menor de 5 años")))  %>%
+ggplot(aes(x = FECHA, y = VALOR)) +
+  geom_line(aes(group = 2, color = UNIDAD))+
+  scale_color_manual(
+    values = c("darkorange", 639)) +
+  ylim(0, 40) +
+  scale_x_continuous(breaks=seq(1984, 2020, 2), limits=c(1984,2020))  +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)"|
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  mutate(VALOR = round((as.numeric(VALOR)),1)) %>% 
+  mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)" ~ "Menor de 1 año",
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)" ~ "Menor de 5 años"))  %>%
+    mutate(UNIDAD = factor(UNIDAD, levels = c("Menor de 1 año", "Menor de 5 años")))  %>%
+  rename(ANIO = FECHA)  %>%
+  rename(EDAD_ant=EDAD) %>%
+  rename(EDAD=UNIDAD)
+t1 <- t1 [,c("NOMINDICADOR","PAÍS", "EDAD", "ANIO","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 564,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+<br />
+
+
