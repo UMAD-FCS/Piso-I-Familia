@@ -74,7 +74,7 @@ La clasificación de los hogares según el tipo refleja la composición de los h
 * Hogar extendido o compuesto con núcleo biparental: constituido por un hogar con núcleo biparental que incluyen uno o más parientes o no parientes del jefe de hogar.
 * Hogar sin núcleo: integrado por individuos no emparentados entre ellos.
 
-En 2020 se observa que 35,8% de los hogares están compuestos por una pareja con hijos/as, 18,1% son unipersonales, 17,9% compuestos por una preja sin hijos/as y 11,4% son monoparentales femeninos. En una menor proporción se encuentran los otros tipos de hogares. 
+En 2021 se observa que 36,9% de los hogares están compuestos por una pareja con hijos/as, 17,5% son unipersonales, 18,9% compuestos por una preja sin hijos/as y 11,8% son monoparentales femeninos. En una menor proporción se encuentran los otros tipos de hogares. 
 
 </div>
 
@@ -398,7 +398,7 @@ nota_formatted <- paste(
 
 
 <div style="text-align: justify">
-En el siguiente gráfico puede observarse que en 2020 la mayoría de hogares en los que residen menores de 18 años son biparentales (64%), seguido de hogares monoparentales femeninos (14%) y de extendidos o compuestos (11%). 
+En el siguiente gráfico puede observarse que en 2021 la mayoría de hogares en los que residen menores de 18 años son biparentales (67%), seguido de hogares monoparentales femeninos (15%) y de extendidos o compuestos (7%). 
 
 </div>
 
@@ -558,7 +558,7 @@ nota_formatted <- paste(
 
 <div style="text-align: justify">
 
-Al analizar la distribución de los hogares con menores de 18 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del Quintil 1 a 78,4% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
+Al analizar la distribución de los hogares con menores de 18 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 58% en los hogares del Quintil 1 a 83% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
 
 </div>
 
@@ -718,7 +718,7 @@ nota_formatted <- paste(
 
 
 <div style="text-align: justify">
-En el siguiente gráfico puede observarse que en 2020 la mayoría de hogares en los que residen menores de 15 años son biparentales (65%), seguido de hogares monoparentales femeninos (13%) y de extendidos o compuestos (12%). 
+En el siguiente gráfico puede observarse que en 2021 la mayoría de hogares en los que residen menores de 15 años son biparentales (69%), seguido de hogares monoparentales femeninos (14%) y de extendidos o compuestos (7%). 
 
 </div>
 
@@ -878,7 +878,7 @@ nota_formatted <- paste(
 
 <div style="text-align: justify">
 
-Al analizar la distribución de los hogares con menores de 15 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del Quintil 1 a 80,9% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
+Al analizar la distribución de los hogares con menores de 15 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 59% en los hogares del Quintil 1 a 83% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
 
 </div>
 
@@ -1054,7 +1054,7 @@ Se definen las categorías de la siguiente manera:
 * Modelo de inversión de roles modificado: el varón ocupado a tiempo parcial y mujer ocupada a tiempo completo. 
 * Modelo residual: ambos no trabajan (desocupados o inactivos).  
 
-A partir del gráfico es posible observar que entre 2006 y 2020 se produce una disminución del porcentaje de hogares con modelo de proveedor tradicional y, como contracara, un aumento del porcentaje de hogares con modelo de doble carrera. 
+A partir del gráfico es posible observar que entre 2006 y 2021 se produce una disminución del porcentaje de hogares con modelo de proveedor tradicional y, como contracara, un aumento del porcentaje de hogares con modelo de doble carrera. 
 
 </div>
 
@@ -1207,7 +1207,7 @@ nota_formatted <- paste(
 
 <div style="text-align: justify">
 
-Considerando el modelo de proveedor de los hogares según el quintil de ingresos hay dos aspectos a destacar. Por un lado, el porcentaje de hogares con modelo de proveedor tradicional disminuye a medida que aumentan los ingresos de los hogares, pasando de 45,5% en los hogares del primer quintil de ingresos a 9,9% en los del quinto quintil. Del otro lado, los hogares con modelo de doble carrera aumentan el porcentaje conforme aumenta el quintil de ingresos (17,0% en el primer quintil y 37,3% en el quinto quintil).   
+Considerando el modelo de proveedor de los hogares según el quintil de ingresos hay dos aspectos a destacar. Por un lado, el porcentaje de hogares con modelo de proveedor tradicional disminuye a medida que aumentan los ingresos de los hogares, pasando de 44,1% en los hogares del primer quintil de ingresos a 10,5% en los del quinto quintil. Del otro lado, los hogares con modelo de doble carrera aumentan el porcentaje conforme aumenta el quintil de ingresos (17,9% en el primer quintil y 35,8% en el quinto quintil).   
 
 </div>
 
@@ -1368,7 +1368,7 @@ nota_formatted <- paste(
 <div style="text-align: justify">
 El análisis del estado civil de las personas permite conocer aspectos vinculados a la nupcialidad, viudez, separaciones, así como dinámicas de la organización familiar. Las personas se clasifican en varias categorías: solteros, casados, unión libre, viudos, divorciados y separados.
 
-En el siguiente gráfico se observa que mientras el porcentaje de personas solteras, divorciadas o separadas y viudas se mantiene relativamente estable en el período presentado, el porcentaje de personas casadas diminuye en 8 puntos porcentuales, mientras el porcentaje de personas en unión libre aumenta en la misma magnitud.  
+En el siguiente gráfico se observa que mientras el porcentaje de personas solteras, divorciadas o separadas y viudas se mantiene relativamente estable en el período presentado, el porcentaje de personas casadas diminuye en 10 puntos porcentuales, mientras el porcentaje de personas en unión libre aumenta en la misma magnitud.  
 
 </div>
 
@@ -1523,7 +1523,7 @@ nota_formatted <- paste(
 La jefatura de hogar es utilizada para identificar una persona de referencia en las Encuestas Continuas de Hogares para designar el parentesco con el resto de las personas integrantes del hogar. Ante esta pregunta, las interpretaciones que pueden dar los/as encuestados/as son diversas, resultando complejo delimitar el concepto de jefatura. A pesar de esta limitación, el análisis de la jefatura del hogar según sexo resulta un indicador relevante para aproximarnos a la organización familiar y las dinámicas de género en los hogares. 
 
 
-Es posible observar que el porcentaje de hogares con jefatura femenina aumenta 14 puntos porcentuales entre 2006 y 2020, pasando de 33,2% a 47,1%. Por su parte, puede verse que en el localidades mayores a 5.000 habitantes es donde el porcentaje de hogares con jefatura femenina es mayor, seguido por las localidades menores de 5.000 habitabtes y, luego, el área rural dispersa.  
+Es posible observar que el porcentaje de hogares con jefatura femenina aumenta 17 puntos porcentuales entre 2006 y 2021, pasando de 33,2% a 50,7%. Por su parte, puede verse que en el localidades mayores a 5.000 habitantes es donde el porcentaje de hogares con jefatura femenina es mayor, seguido por las localidades menores de 5.000 habitabtes y, luego, el área rural dispersa.  
 
 </div>
 
@@ -2022,7 +2022,7 @@ nota_formatted <- paste(
 <div style="text-align: justify">
 El siguiente indicador permite conocer la composición de los hogares según las edades de sus integrantes, en particular, de personas mayores de 65 años, resultando relevante para conocer la carga de cuidados en los hogares, el número de personas en edad jubilatoria, entre otras.
 
-El porcentaje de hogares con mayores presenta una leve disminución en el período 2006-2020. Por un lado, puede verse que esta disminución es más marcada para los hogares con jefatura femenina. Por otro, en los quintiles de ingresos más bajos es donde este porcentaje es menor, encontrándose un porcentaje similar en los quiniles 3, 4 y 5.  
+El porcentaje de hogares con mayores presenta una leve disminución en el período 2006-2021. Por un lado, puede verse que esta disminución es más marcada para los hogares con jefatura femenina. Por otro, en los quintiles de ingresos más bajos es donde este porcentaje es menor, encontrándose un porcentaje similar en los quiniles 3, 4 y 5.  
 
 </div>
 <br />
@@ -2907,7 +2907,7 @@ cita_formatted <- paste(
 
 <div style="text-align: justify">
 
-La tasa específica de fecundidad adolescente es un indicador que da cuenta de la evolución del embarazo adolescente. Este indicador presenta un aumento de 10 puntos porcentuales entre 1996 y 2013, pasado de 70,5 a 60,9 cada mil mujeres entre 15 y 19 años. A partir de dicho año y hasta 2020, se asiste a una disminución marcada y sostenida, alcanzando en 2020 el valor de 28 cada mil mujeres entre 15 y 19 años de edad.    
+La tasa específica de fecundidad adolescente es un indicador que da cuenta de la evolución del embarazo adolescente. Este indicador presenta una disminución de 10 puntos porcentuales entre 1996 y 2013, pasado de 70,5 a 60,9 cada mil mujeres entre 15 y 19 años. A partir de dicho año y hasta 2021, se asiste a una disminución marcada y sostenida, alcanzando en 2021 el valor de 26 cada mil mujeres entre 15 y 19 años de edad.    
 
 </div>
 
@@ -3718,7 +3718,7 @@ Por su parte, se presentan indicadores de asistencia a la educación inicial, pr
 
 <div style="text-align: justify">
 
-Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y varones entre 14 y 49 años de edad según presencia de menores en el hogar. Es posible observar que la brecha en la tasa de participación entre mujeres y varones aumenta cuando conviven con niños de menor edad, encontrándose una mayor brecha para mujeres y varones que viven con niños/as de 0 a 3 años. Sin embargo, cabe mencionar que la brecha se reduce entre 2006 y 2020 para los tres tramos de edad considerados.     
+Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y varones entre 14 y 49 años de edad según presencia de menores en el hogar. Es posible observar que la brecha en la tasa de participación entre mujeres y varones aumenta cuando conviven con niños de menor edad, encontrándose una mayor brecha para mujeres y varones que viven con niños/as de 0 a 3 años. Sin embargo, cabe mencionar que la brecha se reduce entre 2006 y 2021 para los tres tramos de edad considerados.     
 
 
 </div>
@@ -3728,7 +3728,7 @@ Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y 
 
 
 ```{r}
-periodo <- base[base$CODIND == 542,]
+periodo <- base[base$NOMINDICADOR==541,]
 periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 max<- min(periodo$FECHA)
@@ -4882,7 +4882,7 @@ cita_formatted <- paste(
 <br />
 
 <div style="text-align: justify">
-El siguiente indicador da cuenta del porcentaje de niños y niñas que no tienen ningún tipo de cobertura en salud. Por un lado, puede verse que el porcentaje de niños/as sin cobertura es mayor a medida que aumenta el tramo de edad considerado, en particular, hasta 2010. A su vez, se observa una disminunción marcada de los niños/as sin cobertura de salud para los tres tramos de edad considerados a lo largo del período, llegando a niveles menores al 1% a partir de 2013.  
+El siguiente indicador da cuenta del porcentaje de niños y niñas que no tienen ningún tipo de cobertura en salud. Por un lado, puede verse que el porcentaje de niños/as sin cobertura es mayor a medida que aumenta el tramo de edad considerado, en particular, hasta 2010. A su vez, se observa una disminunción marcada de los niños/as sin cobertura de salud para los tres tramos de edad considerados a lo largo del período, llegando a niveles menores al 1% a partir de 2013. En el segundo semestre de 2021, el valor del indicador se ubica levamente por encima del 1%.  
 
 </div>
 
@@ -5010,7 +5010,7 @@ nota_formatted <- paste(
 
 
 <div style="text-align: justify">
-El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 año y menores de 5 años cada 1000 habitantes. Es posible observar que desde 1984 hasta 2020 ambas tasas se han reducido sustancialmente. La tasa de mortalidad para niños/as menores de 1 año pasa de 30,1 a 6,2 en el período considerado, mientras la tasa de mortalidad para niños/as menores de 5 años pasa de 34,1 a 6,9. 
+El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 año y menores de 5 años cada 1000 habitantes. Es posible observar que desde 1984 hasta 2021 ambas tasas se han reducido sustancialmente. La tasa de mortalidad para niños/as menores de 1 año pasa de 30,1 a 6,3 en el período considerado, mientras la tasa de mortalidad para niños/as menores de 5 años pasa de 34,1 a 7,5. 
 
 </div>
 
@@ -5019,7 +5019,7 @@ El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 a
 
 ```{r}
 periodo <- base[base$CODIND == 564,]
-#periodo <- periodo[periodo$URBANORURALUY == "Total país",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
