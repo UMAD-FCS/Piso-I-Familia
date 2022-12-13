@@ -32,6 +32,7 @@ suppressPackageStartupMessages(library(dplyr))
 
 
 base        <- readxl::read_excel("Data/Base motor_familia.xls")
+#base        <- readxl::read_excel("Bases/Data_Umad/Base_Motor_familia_12122022.xlsx")
 base_fichas <- readxl::read_excel("Data/Fichas_Familia.xls")
 base_fichas <- base_fichas[order(base_fichas$ID),]
 

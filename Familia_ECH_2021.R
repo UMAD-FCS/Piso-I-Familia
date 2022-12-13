@@ -37,9 +37,6 @@ BASE_AUX <- data.frame("CODIND"=c(""),
 sem1          <- rio::import("Bases/ECH_2021_sem1_terceros.sav")
 sem2_implant  <- rio::import("Bases/ECH_implantacion_sem2_2021.csv")
 
-
-#banco_mundial <- rio::import("Bases/Data_Banco_Mundial/Headcount_table_sp_Datos_completos_data.csv") # Descarga de: https://www.bancomundial.org/es/topic/poverty/lac-equity-lab1/poverty/head-count
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
 ### Me quedo con los hogares donde hay uno y solo un jefe
@@ -13105,4 +13102,4 @@ BASE <- cbind(BASE, EDAD_HIJ)
 colnames(BASE) <- c("CODIND",	"NOMINDICADOR",	"CATEGORIA",	"PESTAÑA",	"SEXO",	"ASCENDENCIA",	"QUINTIL",	"DEPARTAMENTOUY",	"URBANORURALUY",	"EDAD",	"POBRE",	"NSE",	"NIVELEDU",	"PAÍS",	"FECHA",	"VALOR",	"RESPONSABLE",	"EDAD_HIJ")
 #Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xls")
 #Base_Motor_Familia_12122022  <- rbind(Base_Motor_Familia, BASE)
-#rio::export(Base_Motor_Pobreza_15062022, "Bases/Data_Umad/Base_Motor_familia_12122022.xlsx" )
+#rio::export(Base_Motor_Familia_12122022, "Bases/Data_Umad/Base_Motor_familia_12122022.xlsx" )
