@@ -11,7 +11,7 @@ output:
 <script>
   $(document).ready(function() {
     $head = $('#header');
-    $head.prepend('<img src="logo.png\" style=\"float: right;width: 400px;\"/>')
+    $head.prepend('<img src="images/logo.png\" style=\"float: right;width: 400px;\"/>')
   });
 </script>
 
@@ -83,7 +83,7 @@ En 2020 se observa que 35,8% de los hogares están compuestos por una pareja con
 
 ```{r}
 periodo <- base[base$CODIND == 500,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -112,7 +112,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -130,7 +130,7 @@ g1 <-
     values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
   ) +
   #  ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -160,7 +160,7 @@ t1 <-
                      NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
                      NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
                      NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", , EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -194,6 +194,7 @@ def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
 def_formatted <- paste(
   text_spec(def, color = 1, font_size = 16, align = "justify"),
   collapse = " ")
+
 ```
 > **Definición:** `r def_formatted`
 
@@ -206,7 +207,6 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
-
 ##
 
 
@@ -217,6 +217,14 @@ cita_formatted <- paste(
   collapse = " ")
 ```
 `r cita_formatted` 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 <br />
 
@@ -237,7 +245,7 @@ Al analizar la distribución de los hogares según quintil de ingresos se encuen
 
 ```{r}
 periodo <- base[base$CODIND == 500,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 periodo <- c(max)
 periodo_formatted <- paste(
@@ -265,7 +273,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), , EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -278,7 +286,7 @@ g1 <-
     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
   mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.6)+
@@ -315,7 +323,7 @@ t1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -328,7 +336,7 @@ t1 <-
     NOMINDICADOR =="Distribución porcentual de los hogares según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
   mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   rename(TIPO_HOGAR = UNIDAD)
 
@@ -374,6 +382,335 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
+<br />
+
+
+
+
+
+<div style="text-align: justify">
+En el siguiente gráfico puede observarse que en 2020 la mayoría de hogares en los que residen menores de 18 años son biparentales (64%), seguido de hogares monoparentales femeninos (14%) y de extendidos o compuestos (11%). 
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 501,]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
+max<- max(periodo$FECHA)
+min<- min(periodo$FECHA)
+periodo <- c(min," - ", max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de hogares con menores de 18 años según tipo de hogar **
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  rename(ANIO = FECHA) %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","ANIO","VALOR")]
+         t1 <- t1[order(t1$ANIO), ]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 501,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
+<br />
+
+
+
+
+<div style="text-align: justify">
+
+Al analizar la distribución de los hogares con menores de 18 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del Quintil 1 a 78,4% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
+
+</div>
+
+<br />
+<div style="text-align: center">
+
+
+```{r}
+periodo <- base[base$CODIND == 501,]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
+max<- max(periodo$FECHA)
+periodo <- c(max)
+periodo_formatted <- paste(
+  text_spec(periodo, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+##### **Distribución porcentual de los hogares con menores de 18 años según tipo de hogar, por quintil de ingresos**
+##### Total país, `r periodo_formatted`
+
+</div>
+
+## {.tabset .tabset-fade .tabset-pills}
+### Gráfico
+
+
+```{r, out.width='100%'}
+#===============================================================================
+
+g1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
+  geom_bar(stat="identity", width=0.6)+
+  scale_fill_manual(
+    values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
+  ) +
+  #  ylim(0, 100) +
+  theme_minimal() +
+  labs(
+    color = "",
+    title = "",
+    caption = "Unidad de Métodos y Acceso a Datos (UMAD)",
+    x = "",
+    y = ""
+  )
+ggplotly(g1) %>% 
+  config(displayModeBar = F) %>%
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+
+
+#===============================================================================
+```
+
+### Descargar Tabla
+
+
+```{r}
+t1 <- 
+  base %>% filter((NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)"|
+                  NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)"), 
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
+  mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
+  mutate(UNIDAD = case_when(
+    NOMINDICADOR == "Distribución porcentual de hogares con menores según tipo de hogar (Unipersonal)" ~ "Unipersonal",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Pareja sin hijos)" ~ "Pareja sin hijos",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Biparental)" ~ "Biparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental femenino)" ~ "Monoparental femenino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Monoparental masculino)" ~ "Monoparental masculino",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido o compuesto)" ~ "Extendido o compuesto",
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Extendido con núcleo monoparental)" ~ "Extendido con núcleo monoparental" ,
+    NOMINDICADOR =="Distribución porcentual de hogares con menores según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
+  mutate(QUINTIL = case_when(
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
+  mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
+  rename(TIPO_HOGAR = UNIDAD)
+
+         t1 <- t1 [,c("NOMINDICADOR","PAÍS","TIPO_HOGAR","QUINTIL","VALOR")]
+
+
+DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'print') )
+) 
+```
+
+### Ficha Técnica
+
+
+```{r}
+ficha = base_fichas[base_fichas$CODIND == 501,]
+
+def <- strsplit(paste0(ficha [1,"DEFINICIÓN"])," ")[[1]]
+def_formatted <- paste(
+  text_spec(def, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Definición:** `r def_formatted`
+
+
+```{r}
+calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
+calc_formatted <- paste(
+  text_spec(calc, color = 1, font_size = 16, align = "justify"),
+  collapse = " ")
+```
+> **Forma de cálculo:** `r calc_formatted`
+
+
+##
+
+
+```{r}
+cita <- strsplit(paste0("Fuente: ", ficha [1,"FUENTE"])," ")[[1]]
+cita_formatted <- paste(
+  text_spec(cita, color = 1, font_size = 12, align = 2),
+  collapse = " ")
+```
+`r cita_formatted` 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 <br />
 
@@ -390,7 +727,7 @@ En el siguiente gráfico puede observarse que en 2020 la mayoría de hogares en 
 
 ```{r}
 periodo <- base[base$CODIND == 516,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -419,7 +756,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -437,7 +774,7 @@ g1 <-
     values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon","indianred2", "indianred"), guide = "none"
   ) +
   #  ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -467,7 +804,7 @@ t1 <-
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -525,6 +862,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -532,7 +877,7 @@ cita_formatted <- paste(
 
 <div style="text-align: justify">
 
-Al analizar la distribución de los hogares con menores de 15 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del quintil 1 a 80,9% en los del quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
+Al analizar la distribución de los hogares con menores de 15 años según quintil de ingresos se encuentran algunas diferencias a destacar. Es posible observar que a medida que aumentan los ingresos de los hogares aumenta el porcentaje de hogares biparentales, pasando de 50,9% en los hogares del Quintil 1 a 80,9% en los del Quintil 5. Por su parte, los hogares monoparentales femeninos y los extendidos o compuestos (con o sin núcleo monoparental) disminuyen su porcentaje a medida que aumenta el quintil de ingresos.  
 
 </div>
 
@@ -542,7 +887,7 @@ Al analizar la distribución de los hogares con menores de 15 años según quint
 
 ```{r}
 periodo <- base[base$CODIND == 500,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 periodo <- c(max)
 periodo_formatted <- paste(
@@ -570,7 +915,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -583,7 +928,7 @@ g1 <-
     NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
   mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.6)+
@@ -620,7 +965,7 @@ t1 <-
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido o compuesto)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Extendido con núcleo monoparental)"|
                   NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)"), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Unipersonal)" ~ "Unipersonal",
@@ -633,7 +978,7 @@ t1 <-
     NOMINDICADOR =="Distribución porcentual de hogares con menores de 15 años según tipo de hogar (Sin núcleo)" ~ "Sin núcleo"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unipersonal", "Pareja sin hijos", "Biparental","Monoparental femenino", "Monoparental masculino", "Extendido o compuesto", "Extendido con núcleo monoparental", "Sin núcleo")))  %>%
   mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   rename(TIPO_HOGAR = UNIDAD)
 
@@ -678,6 +1023,14 @@ cita_formatted <- paste(
   collapse = " ")
 ```
 `r cita_formatted` 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 <br />
 
@@ -709,7 +1062,7 @@ A partir del gráfico es posible observar que entre 2006 y 2020 se produce una d
 
 ```{r}
 periodo <- base[base$CODIND == 504,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -735,7 +1088,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
-                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
@@ -751,7 +1104,7 @@ g1 <-
     values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60", "darksalmon"), guide = "none"
   ) +
   #  ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -778,7 +1131,7 @@ t1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
-                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
@@ -834,6 +1187,15 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -853,7 +1215,7 @@ Considerando el modelo de proveedor de los hogares según el quintil de ingresos
 
 ```{r}
 periodo <- base[base$CODIND == 504,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 periodo <- c(max)
 periodo_formatted <- paste(
@@ -878,7 +1240,7 @@ g1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
-                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
@@ -889,7 +1251,7 @@ g1 <-
     NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
     mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   ggplot(aes(x = QUINTIL, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.6)+
@@ -923,7 +1285,7 @@ t1 <-
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Doble carrera)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles)"|
                   NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Inversión de roles modificado)"|
-                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", FECHA==max(FECHA)) %>%
+                  NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", FECHA==max(FECHA), EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
     NOMINDICADOR == "Distribución porcentual de los hogares biparentales según modelo de pareja (Proveedor tradicional)" ~ "Proveedor tradicional",
@@ -934,7 +1296,7 @@ t1 <-
     NOMINDICADOR =="Distribución porcentual de los hogares biparentales según modelo de pareja (Residual)" ~ "Residual"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Proveedor tradicional", "Proveedor modificado", "Doble carrera","Inversión de roles", "Inversión de roles modificado", "Residual")))  %>%
     mutate(QUINTIL = case_when(
-    QUINTIL == "QUINTIL 1" ~ "Quintil 1", QUINTIL == "QUINTIL 2" ~ "Quintil 2", QUINTIL == "QUINTIL 3" ~ "Quintil 3", QUINTIL == "QUINTIL 4" ~ "Quintil 4", QUINTIL == "QUINTIL 5" ~ "Quintil 5"))  %>%
+    QUINTIL == "Quintil 1" ~ "Quintil 1", QUINTIL == "Quintil 2" ~ "Quintil 2", QUINTIL == "Quintil 3" ~ "Quintil 3", QUINTIL == "Quintil 4" ~ "Quintil 4", QUINTIL == "Quintil 5" ~ "Quintil 5"))  %>%
   mutate(QUINTIL = factor(QUINTIL, levels = c("Quintil 1", "Quintil 2", "Quintil 3","Quintil 4", "Quintil 5")))  %>%
   rename(MODELO_PROVEEDOR = UNIDAD)
 
@@ -980,6 +1342,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -1006,7 +1376,7 @@ En el siguiente gráfico se observa que mientras el porcentaje de personas solte
 
 ```{r}
 periodo <- base[base$CODIND == 505,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1028,16 +1398,16 @@ periodo_formatted <- paste(
 
 
 g1 <- 
-  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)"|
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)" ~ "Unión libre", 
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)" ~ "Unión libre", 
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)" ~ "Divorciada/o o separada/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
@@ -1047,7 +1417,7 @@ NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal 
     values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60"), guide = "none"
   ) +
   #  ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -1069,16 +1439,16 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)"|
+  base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal(Unión libre)" ~ "Unión libre", 
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)" ~ "Unión libre", 
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/0)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)" ~ "Divorciada/o o separada/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
@@ -1129,6 +1499,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -1153,7 +1531,7 @@ Es posible observar que el porcentaje de hogares con jefatura femenina aumenta 1
 
 ```{r}
 periodo <- base[base$CODIND == 508,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1177,7 +1555,7 @@ periodo_formatted <- paste(
 
 g1 <- 
   base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"|
-NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
 NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"~ "Varón", 
@@ -1189,7 +1567,7 @@ NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (
     values = c("darkorange", 639), guide = "none"
   ) +
   #  ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 1)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -1212,7 +1590,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"|
-NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
 NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Varón)"~ "Varón", 
@@ -1265,13 +1643,21 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 
 <br />
 <div style="text-align: center">
 
 ```{r}
 periodo <- base[base$CODIND == 508,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1291,18 +1677,18 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"),   
-FECHA>2005, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"|URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"|URBANORURALUY == "RURAL DISPERSO"|URBANORURALUY == "TOTAL PAÍS") %>%
+FECHA>2005, SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", URBANORURALUY == "Urbano (menos de 5.000 habitantes)"|URBANORURALUY == "Urbano (más de 5.000 habitantes)"|URBANORURALUY == "Rural disperso"|URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
-  URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"~"Urbano (Menos de 5.000 habitantes)", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"~"Urbano (Más de 5.000 habitantes)",URBANORURALUY == "RURAL DISPERSO"~ "Rural disperso", URBANORURALUY == "TOTAL PAÍS"~"Total país"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (Menos de 5.000 habitantes)", "Urbano (Más de 5.000 habitantes)", "Rural disperso", "Total país")))  %>%
+  URBANORURALUY == "Urbano (menos de 5.000 habitantes)"~"Urbano (menos de 5.000 habitantes)", URBANORURALUY == "Urbano (más de 5.000 habitantes)"~"Urbano (más de 5.000 habitantes)",URBANORURALUY == "Rural disperso"~ "Rural disperso", URBANORURALUY == "Total país"~"Todos"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (menos de 5.000 habitantes)", "Urbano (más de 5.000 habitantes)", "Rural disperso", "Todos")))  %>%
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 4, color = UNIDAD))+
  scale_color_manual(
     values = c(639, "#a1dd70","orangered","lightslategrey")
       ) +
   ylim(0, 75) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2)) +
+  scale_x_continuous(breaks=seq(2006, max, 1)) +
   theme_minimal() +
   labs(
     color = "",
@@ -1325,11 +1711,11 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
 base %>% filter((NOMINDICADOR =="Distribución porcentual de los hogares según sexo del jefe/a (Mujer)"),  
-FECHA>2005, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"|URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"|URBANORURALUY == "RURAL DISPERSO"|URBANORURALUY == "TOTAL PAÍS") %>%
+FECHA>2005, SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", URBANORURALUY == "Urbano (menos de 5.000 habitantes)"|URBANORURALUY == "Urbano (más de 5.000 habitantes)"|URBANORURALUY == "Rural disperso"|URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
 mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
 mutate(UNIDAD = case_when(
-URBANORURALUY == "URBANO (MENOS DE 5.000 HABITANTES)"~"Urbano (Menos de 5.000 habitantes)", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)"~"Urbano (Más de 5.000 habitantes)",URBANORURALUY == "RURAL DISPERSO"~ "Rural disperso", URBANORURALUY == "TOTAL PAÍS"~"Total país"))  %>%
-mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (Menos de 5.000 habitantes)", "Urbano (Más de 5.000 habitantes)", "Rural disperso", "Total país")))  %>%
+URBANORURALUY == "Urbano (menos de 5.000 habitantes)"~"Urbano (menos de 5.000 habitantes)", URBANORURALUY == "Urbano (más de 5.000 habitantes)"~"Urbano (más de 5.000 habitantes)",URBANORURALUY == "Rural disperso"~ "Rural disperso", URBANORURALUY == "Total país"~"Todos"))  %>%
+mutate(UNIDAD = factor(UNIDAD, levels = c("Urbano (menos de 5.000 habitantes)", "Urbano (más de 5.000 habitantes)", "Rural disperso", "Todos")))  %>%
 rename(UNIDAD_GEOGRÁFICA = URBANORURALUY) %>%
 rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","UNIDAD_GEOGRÁFICA","ANIO","VALOR")]
@@ -1376,6 +1762,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -1396,7 +1790,7 @@ El porcentaje de hogares en los que residen menores entre 0 y 17 años tiene una
 
 ```{r}
 periodo <- base[base$CODIND == 512,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1415,10 +1809,10 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "Total país", SEXO == "Todos"|SEXO=="Varones"|SEXO=="Mujeres", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(
-  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  SEXO =="Varones" ~ "Varones", SEXO == "Mujeres" ~ "Mujeres", SEXO=="Todos" ~ "Total"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 3, color = UNIDAD))+
@@ -1427,7 +1821,7 @@ g1 <-
     labels = c("Varones", "Mujeres", "Total")
   ) +
   ylim(0, 60) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  scale_x_continuous(breaks=seq(2006, max, 1), limits=c(2006,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -1448,10 +1842,10 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", URBANORURALUY == "Total país", SEXO == "Todos"|SEXO=="Varones"|SEXO=="Mujeres", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(
-  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  SEXO =="Varones" ~ "Varones", SEXO == "Mujeres" ~ "Mujeres", SEXO=="Todos" ~ "Total"))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO","ANIO","VALOR")]
 t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -1497,6 +1891,13 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 
 <br />
@@ -1505,7 +1906,7 @@ cita_formatted <- paste(
 
 ```{r}
 periodo <- base[base$CODIND == 512,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1524,10 +1925,10 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
 mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
 mutate(UNIDAD = case_when(
-QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+QUINTIL == "Quintil 1"~"Quintil 1", QUINTIL == "Quintil 2"~"Quintil 2",QUINTIL == "Quintil 3"~ "Quintil 3", QUINTIL == "Quintil 4"~"Quintil 4", QUINTIL == "Quintil 5"~"Quintil 5"))  %>%
 mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 5, color = UNIDAD))+
@@ -1535,7 +1936,7 @@ mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3",
     values = c("darkorange", 639,"#a1dd70","darkseagreen3","grey60"),
   ) +
   ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  scale_x_continuous(breaks=seq(2006, max, 1), limits=c(2006,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -1556,10 +1957,10 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
 mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
 mutate(UNIDAD = case_when(
-QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+QUINTIL == "Quintil 1"~"Quintil 1", QUINTIL == "Quintil 2"~"Quintil 2",QUINTIL == "Quintil 3"~ "Quintil 3", QUINTIL == "Quintil 4"~"Quintil 4", QUINTIL == "Quintil 5"~"Quintil 5"))  %>%
 mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","QUINTIL","ANIO","VALOR")]
@@ -1606,6 +2007,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -1620,7 +2029,7 @@ El porcentaje de hogares con mayores presenta una leve disminución en el perío
 
 ```{r}
 periodo <- base[base$CODIND == 513,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1639,10 +2048,10 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(CODIND==513, NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(CODIND==513, NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "Total país", SEXO == "Todos"|SEXO=="Varones"|SEXO=="Mujeres", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(
-  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  SEXO =="Varones" ~ "Varones", SEXO == "Mujeres" ~ "Mujeres", SEXO=="Todos" ~ "Total"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 3, color = UNIDAD))+
@@ -1651,7 +2060,7 @@ g1 <-
     labels = c("Varones", "Mujeres", "Total")
   ) +
   ylim(0, 60) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  scale_x_continuous(breaks=seq(2006, max, 1), limits=c(2006,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -1672,10 +2081,10 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS"|SEXO=="VARONES"|SEXO=="MUJERES", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", URBANORURALUY == "Total país", SEXO == "Todos"|SEXO=="Varones"|SEXO=="Mujeres", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(
-  SEXO =="VARONES" ~ "Varones", SEXO == "MUJERES" ~ "Mujeres", SEXO=="TODOS" ~ "Total"))  %>%
+  SEXO =="Varones" ~ "Varones", SEXO == "Mujeres" ~ "Mujeres", SEXO=="Todos" ~ "Total"))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO","ANIO","VALOR")]
 t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -1721,6 +2130,13 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 <br />
 <div style="text-align: center">
@@ -1728,7 +2144,7 @@ cita_formatted <- paste(
 
 ```{r}
 periodo <- base[base$CODIND == 513,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -1747,10 +2163,10 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
 mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
 mutate(UNIDAD = case_when(
-QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+QUINTIL == "Quintil 1"~"Quintil 1", QUINTIL == "Quintil 2"~"Quintil 2",QUINTIL == "Quintil 3"~ "Quintil 3", QUINTIL == "Quintil 4"~"Quintil 4", QUINTIL == "Quintil 5"~"Quintil 5"))  %>%
 mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 5, color = UNIDAD))+
@@ -1758,7 +2174,7 @@ mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3",
     values = c("darkorange", 639,"#a1dd70","darksalmon","grey60"),
   ) +
   ylim(0, 60) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  scale_x_continuous(breaks=seq(2006, max, 1), limits=c(2006,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -1779,10 +2195,10 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "QUINTIL 1"|QUINTIL == "QUINTIL 2"|QUINTIL == "QUINTIL 3"|QUINTIL == "QUINTIL 4"|QUINTIL == "QUINTIL 5", URBANORURALUY == "TOTAL PAÍS") %>%
+base %>% filter(NOMINDICADOR == "Porcentaje de hogares en los que residen mayores de 64 años", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Quintil 1"|QUINTIL == "Quintil 2"|QUINTIL == "Quintil 3"|QUINTIL == "Quintil 4"|QUINTIL == "Quintil 5", URBANORURALUY == "Total país", EDAD=="Todos", POBRE=="Todos") %>%
 mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
 mutate(UNIDAD = case_when(
-QUINTIL == "QUINTIL 1"~"Quintil 1", QUINTIL == "QUINTIL 2"~"Quintil 2",QUINTIL == "QUINTIL 3"~ "Quintil 3", QUINTIL == "QUINTIL 4"~"Quintil 4", QUINTIL == "QUINTIL 5"~"Quintil 5"))  %>%
+QUINTIL == "Quintil 1"~"Quintil 1", QUINTIL == "Quintil 2"~"Quintil 2",QUINTIL == "Quintil 3"~ "Quintil 3", QUINTIL == "Quintil 4"~"Quintil 4", QUINTIL == "Quintil 5"~"Quintil 5"))  %>%
 mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3", "Quintil 4", "Quintil 5")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","QUINTIL","ANIO","VALOR")]
@@ -1828,6 +2244,14 @@ cita_formatted <- paste(
   collapse = " ")
 ```
 `r cita_formatted` 
+
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 <br />
 
@@ -1871,7 +2295,7 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -1910,7 +2334,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -1987,14 +2411,14 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2008", "2013", "2018")))  %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = FECHA, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -2026,13 +2450,13 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que nunca se fueron de su hogar de origen" ~ "No salida del hogar de origen"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Salida del hogar de origen y volvieron", "Salida del hogar de origen y no nolvieron", "No salida del hogar de origen")))  %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
@@ -2125,13 +2549,13 @@ g1 <-
   base %>% filter((NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)"|
                      NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)"|
                      NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)"), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)" ~ "Quería en ese momento",
                             NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)" ~ "Quería más adelante",
                             NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)" ~ "No quería")) %>%
 mutate(UNIDAD = factor(UNIDAD, levels = c("Quería en ese momento", "Quería más adelante", "No quería")))  %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -2163,12 +2587,12 @@ t1 <-
   base %>% filter((NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)"|
                      NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)"|
                      NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)"), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería)" ~ "Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería en ese momento)",
                             NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)" ~ "orcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (Quería más adelante)",
                             NOMINDICADOR=="Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)" ~ "Porcentaje de personas que en su primer embarazo o el de su pareja querían tener un hijo en ese momento, querían más adelante o no querían (No quería)")) %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   rename(ANIO = FECHA) 
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "SEXO", "ANIO","VALOR")]
@@ -2260,12 +2684,12 @@ g1 <-
   base %>% filter((NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)"|
                      NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)"|
                      NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)"), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)" ~ "Menor cantidad de hijos tenidos que deseados",
 NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)" ~ "Igual cantidad de hijos tenidos que deseados",
 NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)" ~ "Mayor cantidad de hijos tenidos que deseados")) %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -2297,12 +2721,12 @@ t1 <-
   base %>% filter((NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)"|
                      NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)"|
                      NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)"), 
-                  URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MENOR)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Menor cantidad de hijos tenidos que deseados)",
 NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (IGUAL)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Igual cantidad de hijos tenidos que deseados)",
 NOMINDICADOR=="Porcentaje de personas según cantidad de hijos tenidos y deseados (MAYOR)" ~ "Porcentaje de personas según cantidad de hijos tenidos y deseados (Mayor cantidad de hijos tenidos que deseados)")) %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
@@ -2387,13 +2811,13 @@ periodo_formatted <- paste(
 g1 <- 
   base %>% filter((NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)"|
                   NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)"|
-                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)" ~ "Antes de lo que quería",
 NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)" ~ "A la edad que quería",
 NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)" ~ "Después de lo que quería")) %>%
 #mutate(UNIDAD = factor(UNIDAD, levels = c("Quería en ese momento", "Quería más adelante", "No quería")))  %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   ggplot(aes(x = SEXO, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -2424,12 +2848,12 @@ ggplotly(g1) %>%
 t1 <- 
   base %>% filter((NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)"|
                   NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)"|
-                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "TOTAL PAÍS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", EDAD_HIJ=="TODOS") %>%
+                  NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)"),                   URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD_HIJ=="Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(NOMINDICADOR = case_when(NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MENOR)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (Antes de lo que quería)",
 NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (IGUAL)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (A la edad que quería)",
 NOMINDICADOR=="Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener  (MAYOR)" ~ "Porcentaje de personas según edad a la que tuvieron primer hijo y a la que le hubiese gustado tener (Después de lo que quería)")) %>%
-  mutate(SEXO = case_when(SEXO=="MUJERES"~"Mujeres", SEXO=="VARONES"~"Varones",  SEXO=="TODOS"~"Total"))  %>%
+  mutate(SEXO = case_when(SEXO=="Mujeres"~"Mujeres", SEXO=="Varones"~"Varones",  SEXO=="Todos"~"Total"))  %>%
   mutate(SEXO = factor(SEXO, levels = c("Mujeres", "Varones", "Total")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","SEXO", "ANIO","VALOR")]
@@ -2523,8 +2947,9 @@ g1 <-
  scale_color_manual(
     values = c(639)) +
   ylim(0, 75) +
-  scale_x_continuous(breaks=seq(1996, 2020, 2)) +
+  scale_x_continuous(breaks=seq(1996, max, 1)) +
   theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
   labs(
     color = "",
     title = "",
@@ -2648,7 +3073,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la famili
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)"
 ), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)" ~ "Psicológica",
@@ -2691,7 +3116,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la famili
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Sexual)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Física)"
 ), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia en la infancia (Psicológica)" ~ "Psicológica",
@@ -2749,7 +3174,7 @@ cita_formatted <- paste(
 
 <div style="text-align: justify">
 
-En el entorno del 20% de las mujeres de 15 años o más vivieron situaciones de violencia por parte de su familia actual en los últimos 12 meses, observando que en prácticamente todos los casos se vivió violencia psicológica. 
+En el entorno del 20% de las mujeres de 15 años o más vivieron situaciones de violencia por parte de su familia actual en los últimos 12 meses, observando que en prácticamente Todos los casos se vivió violencia psicológica. 
 
 </div>
 
@@ -2783,7 +3208,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la famili
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)"
 ), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)" ~ "Psicológica",
@@ -2828,7 +3253,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la famili
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Física)"
 ), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la familia actual (Psicológica)" ~ "Psicológica",
@@ -2912,7 +3337,7 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((CODIND==537), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(FECHA = factor(FECHA, levels = c("2013", "2019")))  %>%
   ggplot(aes(x = FECHA, y = VALOR, fill=FECHA)) +
@@ -2947,7 +3372,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((CODIND==537), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
@@ -3031,7 +3456,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)"), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)" ~ "Psicológica",
@@ -3077,7 +3502,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Física)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Sexual)"), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja en los últimos 12 meses (Psicológica)" ~ "Psicológica",
@@ -3165,7 +3590,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)"), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)" ~ "Psicológica",
@@ -3210,7 +3635,7 @@ NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Económica)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Física)"|
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Sexual)"), 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS", NSE=="TODOS", NIVELEDU=="TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", NSE=="Todos", NIVELEDU=="Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Total)" ~ "Total",
 NOMINDICADOR=="Prevalencia de violencia basada en género por parte de la pareja o expareja a lo largo de toda la vida (Psicológica)" ~ "Psicológica",
@@ -3303,7 +3728,7 @@ Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y 
 
 ```{r}
 periodo <- base[base$CODIND == 542,]
-periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 max<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -3328,7 +3753,7 @@ NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años c
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)"|
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)"|
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)"|
-NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>%
   rename(SEXO_ANT=SEXO) %>%
   mutate(SEXO = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Varones",
@@ -3347,8 +3772,9 @@ ggplot(aes(x = FECHA, y = VALOR)) +
     values = c("darkorange", 639)) +
     facet_wrap(~EDAD) +
   ylim(0, 100) +
-  scale_x_continuous(breaks=seq(2006, 2020, 2), limits=c(2006,2020))  +
+  scale_x_continuous(breaks=seq(2006, 2021, 1), limits=c(2006,2021))  +
   theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
   labs(
     color = "",
     title = "",
@@ -3375,7 +3801,7 @@ NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años c
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Varón)"|
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 13 en el hogar (Mujer)"|
 NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Varón)"|
-NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años sin menores en el hogar (Mujer)", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>%
   rename(SEXO_ANT=SEXO) %>%
   mutate(SEXO = case_when(NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años con presencia de menores de 4 en el hogar (Varón)" ~ "Varones",
@@ -3432,6 +3858,13 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 
 <br />
@@ -3468,7 +3901,7 @@ NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del h
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)" ~ "Madre",
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)" ~ "Padre",
@@ -3515,7 +3948,7 @@ NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del h
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Abuelo/a)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Otro pariente o no pariente)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Persona remunerada)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Madre)" ~ "Madre",
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as fuera del horario escolar (Padre)" ~ "Padre",
@@ -3607,7 +4040,7 @@ NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enfe
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)" ~ "Madre",
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)" ~ "Padre",
@@ -3654,7 +4087,7 @@ NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enfe
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Abuelo/a)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Otro pariente o no pariente)"|
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Persona remunerada)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Madre)" ~ "Madre",
 NOMINDICADOR=="Participación de personas en el cuidado de niños/as cuando enferman (Padre)" ~ "Padre",
@@ -3740,7 +4173,7 @@ NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del 
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 4 a 5 años)"|
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)"|
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "Mujeres"|SEXO=="Varones", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Mujeres"|SEXO=="Varones", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)" ~ "Personas con discapacidad",
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)" ~ "Niños/as de 0 a 3 años",
@@ -3788,7 +4221,7 @@ NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del 
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 6 a 12 años)"|
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 12 años)"|
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (mayores de 65 años)", 
-URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (personas con discapacidad)" ~ "Personas con discapacidad",
 NOMINDICADOR=="Tasa de participación en las actividades de cuidados dentro del hogar (niños/as de 0 a 3 años)" ~ "Niños/as de 0 a 3 años",
@@ -3872,14 +4305,14 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 1, color = NOMINDICADOR))+
   scale_color_manual(
     values = c("darkorange")) +
   ylim(0, 50) +
-  scale_x_continuous(breaks=seq(2012, 2019, 1), limits=c(2012,2019))  +
+  scale_x_continuous(breaks=seq(2012, max, 1), limits=c(2012,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -3900,7 +4333,7 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación inicial de niños/as de 0 a 2 años", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
@@ -3946,6 +4379,13 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 
 
@@ -3954,7 +4394,7 @@ cita_formatted <- paste(
 
 ```{r}
 periodo <- base[base$CODIND == 552,]
-#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+#periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -3973,15 +4413,16 @@ periodo_formatted <- paste(
 ```{r, out.width='100%'}
 #===============================================================================
 g1 <- 
-  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "Urbano (más de 5.000 habitantes)", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   ggplot(aes(x = FECHA, y = VALOR)) +
   geom_line(aes(group = 1, color = NOMINDICADOR))+
   scale_color_manual(
     values = c("darkorange")) +
   ylim(0, 100) +
-  scale_x_continuous(breaks=seq(1990, 2020, 2), limits=c(1990,2020))  +
+  scale_x_continuous(breaks=seq(1990, max, 1), limits=c(1990,max))  +
   theme_minimal() +
+  theme(legend.position="none", axis.text.x =  element_text(angle = 45)) +
   labs(
     color = "",
     title = "",
@@ -4001,7 +4442,7 @@ ggplotly(g1) %>%
 
 ```{r}
 t1 <- 
-  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+  base %>% filter(NOMINDICADOR == "Tasa de asistencia a la educación de niños/as de 3 a 5 años", URBANORURALUY == "Urbano (más de 5.000 habitantes)", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS","ANIO","VALOR")]
@@ -4047,6 +4488,13 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
 
 
 
@@ -4094,12 +4542,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1<-
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
-URBANORURALUY == "TOTAL PAÍS"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -4108,7 +4556,7 @@ URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   ) +
   facet_wrap(~FECHA) +
   ylim(0, 75) +
-  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Todos")) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(
@@ -4132,12 +4580,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
-URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -4215,12 +4663,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
-URBANORURALUY == "TOTAL PAÍS"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -4228,7 +4676,7 @@ URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
     values = c("darkseagreen3", "darkseagreen", "darkseagreen4"), guide = "none") +
   facet_wrap(~FECHA) +
   ylim(0, 15) +
-  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Todos")) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(
@@ -4253,12 +4701,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
-URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -4335,12 +4783,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
-URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -4349,7 +4797,7 @@ URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   ) +
   facet_wrap(~FECHA) +
   ylim(0, 15) +
-  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Total país")) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Todos")) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(
@@ -4374,12 +4822,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
-URBANORURALUY == "TOTAL PAÍS"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL == "TODOS") %>%
+URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="TOTAL PAÍS" ~ "Total país",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Total país")))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -4442,7 +4890,7 @@ El siguiente indicador da cuenta del porcentaje de niños y niñas que no tienen
 
 ```{r}
 periodo <- base[base$CODIND == 563,]
-#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+#periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- 1991
 periodo <- c(min," - ", max)
@@ -4464,7 +4912,7 @@ periodo_formatted <- paste(
 g1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud"|
 NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud"|
-NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", FECHA>1990, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "Urbano (más de 5.000 habitantes)", FECHA>1990, SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud" ~ "Entre 0 y 5 años",
 NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud" ~ "Entre 6 y 12 años",
@@ -4475,7 +4923,7 @@ ggplot(aes(x = FECHA, y = VALOR)) +
   scale_color_manual(
     values = c("darkorange", 639,"#a1dd70","darkseagreen3")) +
   ylim(0, 15) +
-  scale_x_continuous(breaks=seq(1991, 2020, 2), limits=c(1991,2020))  +
+  scale_x_continuous(breaks=seq(1991, max, 2), limits=c(1991,max))  +
   theme_minimal() +
   labs(
     color = "",
@@ -4498,7 +4946,7 @@ ggplotly(g1) %>%
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud"|
 NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud"|
-NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "URBANO (MÁS DE 5.000 HABITANTES)", FECHA>1990, SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud", URBANORURALUY == "Urbano (más de 5.000 habitantes)", FECHA>1990, SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR))*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Porcentaje de niños menores de 5 años sin cobertura de salud" ~ "Entre 0 y 5 años",
 NOMINDICADOR=="Porcentaje de niños entre 6 y 12 años sin cobertura de salud" ~ "Entre 6 y 12 años",
@@ -4549,6 +4997,14 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+```{r}
+nota <- strsplit(paste0("Notas: ", ficha [1,"NOTAS"])," ")[[1]]
+nota_formatted <- paste(
+  text_spec(nota, color = 1, font_size = 12, align =  2),
+  collapse = " ")
+```
+`r nota_formatted`
+
 <br />
 
 
@@ -4562,7 +5018,7 @@ El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 a
 
 ```{r}
 periodo <- base[base$CODIND == 564,]
-#periodo <- periodo[periodo$URBANORURALUY == "TOTAL PAÍS",]
+#periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
 min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
@@ -4583,7 +5039,7 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)"|
-NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR)),1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)" ~ "Menor de 1 año",
 NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)" ~ "Menor de 5 años"))  %>%
@@ -4593,7 +5049,7 @@ ggplot(aes(x = FECHA, y = VALOR)) +
   scale_color_manual(
     values = c("darkorange", 639)) +
   ylim(0, 40) +
-  scale_x_continuous(breaks=seq(1984, 2020, 2), limits=c(1984,2020))  +
+  scale_x_continuous(breaks=seq(1984, 2022, 2), limits=c(1984,2022))  +
   theme_minimal() +
   labs(
     color = "",
@@ -4615,7 +5071,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)"|
-NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "TOTAL PAÍS", SEXO == "TODOS", ASCENDENCIA == "TODOS", QUINTIL== "TODOS") %>%
+NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)", URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL== "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round((as.numeric(VALOR)),1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR=="Tasa de mortalidad infantil (menor a 1 año)" ~ "Menor de 1 año",
 NOMINDICADOR=="Tasa de mortalidad infantil (menor a 5 años)" ~ "Menor de 5 años"))  %>%
