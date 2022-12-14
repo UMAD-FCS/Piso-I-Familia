@@ -3728,10 +3728,10 @@ Los siguientes indicadores dan cuenta de la tasa de participación de mujeres y 
 
 
 ```{r}
-periodo <- base[base$NOMINDICADOR==541,]
+periodo <- base[base$CODIND==542,]
 periodo <- periodo[periodo$URBANORURALUY == "Total país",]
 max<- max(periodo$FECHA)
-max<- min(periodo$FECHA)
+min<- min(periodo$FECHA)
 periodo <- c(min," - ", max)
 periodo_formatted <- paste(
   text_spec(periodo, color = 1, font_size = 16, align = "justify"),
