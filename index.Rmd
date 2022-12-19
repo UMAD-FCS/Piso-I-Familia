@@ -3175,7 +3175,7 @@ cita_formatted <- paste(
 
 <div style="text-align: justify">
 
-En el entorno del 20% de las mujeres de 15 años o más vivieron situaciones de violencia por parte de su familia actual en los últimos 12 meses, observando que en prácticamente Todos los casos se vivió violencia psicológica. 
+En el entorno del 20% de las mujeres de 15 años o más vivieron situaciones de violencia por parte de su familia actual en los últimos 12 meses, observando que en prácticamente todos los casos se vivió violencia psicológica. 
 
 </div>
 
@@ -4280,7 +4280,7 @@ cita_formatted <- paste(
 <br />
 
 <div style="text-align: justify">
-Los siguientes indicadores dan cuenta de la asistencia a centros de cuidado y educación por parte de niños y niñas entre 0 y 5 años de edad. Es posible observar que tanto la asistencia de niños/as entre 0 y 2 años como entre 3 y 5 años aumenta en los períodos considerados. En el caso de los niños/as de 0 a 2 años puede verse que el porcentaje de asistencia pasa de 27,1% en 2012 a 38% en 2019. Por su parte, el porcentaje de asistencia de niños/as de 3 a 5 años aumenta de 55,7% en 1990 a 89,1% en 2020. 
+Los siguientes indicadores dan cuenta de la asistencia a centros de cuidado y educación por parte de niños y niñas entre 0 y 5 años de edad. Es posible observar que tanto la asistencia de niños/as entre 0 y 2 años como entre 3 y 5 años aumenta en los períodos considerados. En el caso de los niños/as de 0 a 2 años puede verse que el porcentaje de asistencia pasa de 27,1% en 2012 a 38% en 2019. Por su parte, el porcentaje de asistencia de niños/as de 3 a 5 años aumenta de 55,7% en 1990 a 90,4% en 2019. 
 </div>
 
 <br />
@@ -4545,7 +4545,7 @@ g1<-
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
 URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
@@ -4583,7 +4583,7 @@ t1 <-
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
 URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
@@ -4666,7 +4666,7 @@ g1 <-
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
 URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
@@ -4704,7 +4704,7 @@ t1 <-
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
 URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
@@ -4786,7 +4786,7 @@ g1 <-
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
 URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
@@ -4825,7 +4825,7 @@ t1 <-
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
 URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Todos" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
 URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
