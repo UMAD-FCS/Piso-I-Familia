@@ -1,19 +1,19 @@
-
 ---
-title: "**<br /> <br /> Familia y composición de los hogares **"
+title: '**<br /> <br /> Familia y composición de los hogares**'
 output:
   html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 1
+    theme: flatly
+    toc: yes
+    toc_float: yes
+    smooth_scroll: yes
+    toc_depth: 2
+    number_sections: false 
+    css: "www/estilo.css"
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
 ---
 
-<script>
-  $(document).ready(function() {
-    $head = $('#header');
-    $head.prepend('<img src="images/logo.png\" style=\"float: right;width: 400px;\"/>')
-  });
-</script>
 
 
 ```{r setup, include=FALSE}
@@ -21,8 +21,11 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
 
-
 ```{r}
+htmltools::img(src = knitr::image_uri("www/logo_umad.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:15px;max-width: 45%;')
+
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(plotly))
 suppressPackageStartupMessages(library(ggplot2))
@@ -41,15 +44,17 @@ base_fichas <- base_fichas[order(base_fichas$ID),]
 <br />
 
 <div style="text-align: justify">
-La [Unidad de Métodos y Acceso a Datos](https://umad.cienciassociales.edu.uy/) (UMAD) (FCS-UdelaR) a partir del [Observatorio Uruguay](https://umad.cienciassociales.edu.uy/observatorio-uruguay/) busca aportar a la difusión de conocimiento respecto a temas de interés general sobre la realidad social, económica y política del Uruguay. Esta serie de documentos tiene como objetivo presentar indicadores clave para el análisis de tendencias históricas del país que esperamos sean de utilidad para las comunidades académicas, los tomadores de decisión y los formadores de opinión, así como el público en general. Se presentan aquí indicadores sobre familia y composición de los hogares en el Uruguay durante las últimas décadas. 
+**La [Unidad de Métodos y Acceso a Datos](https://umad.cienciassociales.edu.uy/) (UMAD) (FCS-UdelaR) a partir del [Observatorio Uruguay](https://umad.cienciassociales.edu.uy/observatorio-uruguay/) busca aportar a la difusión de conocimiento respecto a temas de interés general sobre la realidad social, económica y política del Uruguay. Esta serie de documentos tiene como objetivo presentar indicadores clave para el análisis de tendencias históricas del país que esperamos sean de utilidad para las comunidades académicas, los tomadores de decisión y los formadores de opinión, así como el público en general. Se presentan aquí indicadores sobre familia y composición de los hogares en el Uruguay durante las últimas décadas.** 
 
 </div>
 
-<br />
-
-# Composición y estructura de los hogares 
+<hr style="border:1.5px solid #2c3e50"> </hr>
 
 <br />
+
+# **Composición y estructura de los hogares** 
+
+## **Tipo de hogar**
 
 <div style="text-align: justify">
 
@@ -97,8 +102,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -148,7 +153,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -185,7 +190,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -208,7 +213,8 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -258,8 +264,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -311,7 +317,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -349,7 +355,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -372,7 +378,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -421,8 +428,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -472,7 +479,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -509,7 +516,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -532,7 +539,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -580,8 +588,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -633,7 +641,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -671,7 +679,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -694,7 +702,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -741,8 +750,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -792,7 +801,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -829,7 +838,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -852,7 +861,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -900,8 +910,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -953,7 +963,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -991,7 +1001,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1014,7 +1024,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1037,7 +1048,7 @@ nota_formatted <- paste(
 
 
 
-
+## **Modelo de proveedor**
 
 
 <div style="text-align: justify">
@@ -1076,8 +1087,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1122,7 +1133,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1154,7 +1165,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1177,7 +1188,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1228,8 +1240,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1276,7 +1288,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1309,7 +1321,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1332,7 +1344,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1355,15 +1368,8 @@ nota_formatted <- paste(
 
 
 
-
-
-
-
-
-
-
 <br />
-
+## **Estado civil**
 
 <div style="text-align: justify">
 El análisis del estado civil de las personas permite conocer aspectos vinculados a la nupcialidad, viudez, separaciones, así como dinámicas de la organización familiar. Las personas se clasifican en varias categorías: solteros, casados, unión libre, viudos, divorciados y separados.
@@ -1389,8 +1395,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1435,7 +1441,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1466,7 +1472,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1489,7 +1495,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1517,7 +1524,7 @@ nota_formatted <- paste(
 
 <br />
 
-
+## **Jefatura del hogar**
 
 <div style="text-align: justify">
 La jefatura de hogar es utilizada para identificar una persona de referencia en las Encuestas Continuas de Hogares para designar el parentesco con el resto de las personas integrantes del hogar. Ante esta pregunta, las interpretaciones que pueden dar los/as encuestados/as son diversas, resultando complejo delimitar el concepto de jefatura. A pesar de esta limitación, el análisis de la jefatura del hogar según sexo resulta un indicador relevante para aproximarnos a la organización familiar y las dinámicas de género en los hogares. 
@@ -1545,8 +1552,8 @@ periodo_formatted <- paste(
 
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1585,7 +1592,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1610,7 +1617,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ) 
 ```
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1633,7 +1640,7 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
 
 
 ```{r}
@@ -1670,8 +1677,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1706,7 +1713,7 @@ ggplotly(g1) %>%
 ```
 
 
-### Descargar Tabla
+#### Tabla
          
          
 ```{r}
@@ -1729,7 +1736,7 @@ buttons = c('copy', 'csv', 'excel', 'print') )
 
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1752,7 +1759,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1779,6 +1787,8 @@ nota_formatted <- paste(
 
 <br />
 
+## **Edad de integrantes**
+
 <div style="text-align: justify">
 El siguiente indicador permite conocer la composición de los hogares según las edades de sus integrantes, en particular, de niños y niñas entre 0 y 17 años, resultando relevante para conocer la carga de cuidados en los hogares, el número de personas en edad escolar, entre otros.
 
@@ -1803,8 +1813,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1838,7 +1848,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1858,7 +1868,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1881,7 +1891,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -1919,8 +1930,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -1953,7 +1964,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -1974,7 +1985,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -1997,7 +2008,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2042,8 +2054,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -2077,7 +2089,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2097,7 +2109,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2120,7 +2132,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2157,8 +2170,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -2191,7 +2204,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2212,7 +2225,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2235,7 +2248,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2260,7 +2274,7 @@ nota_formatted <- paste(
 
 
 
-
+## **Salida de hogar de origen**
 
 <div style="text-align: justify">
 
@@ -2286,8 +2300,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -2329,7 +2343,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2352,7 +2366,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2375,7 +2389,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2402,8 +2417,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -2445,7 +2460,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2470,7 +2485,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2493,7 +2508,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2506,9 +2522,9 @@ cita_formatted <- paste(
 
 <br />
 
-# Planificación familiar
+# **Planificación familiar**
 
-<br />
+## **Adecuación a preferencias**
 
 <div style="text-align: justify">
 
@@ -2535,8 +2551,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -2580,7 +2596,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2606,7 +2622,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2629,7 +2645,7 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
 
 
 ```{r}
@@ -2665,8 +2681,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -2714,7 +2730,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2740,7 +2756,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2763,7 +2779,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2800,8 +2817,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -2842,7 +2859,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2867,7 +2884,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -2890,7 +2907,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -2903,7 +2921,7 @@ cita_formatted <- paste(
 
 <br />
 
-
+## **Fecundidad adolescente**
 
 <div style="text-align: justify">
 
@@ -2928,8 +2946,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -2967,7 +2985,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -2986,7 +3004,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3009,7 +3027,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3026,9 +3045,9 @@ cita_formatted <- paste(
 
 
 
-# Violencia de género
+# **Violencia de género**
 
- 
+## **Prevalencia en la familia**
 
 <div style="text-align: justify">
 
@@ -3060,8 +3079,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -3107,7 +3126,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3135,7 +3154,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3158,7 +3177,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3195,8 +3215,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -3244,7 +3264,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3272,7 +3292,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3295,7 +3315,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3328,8 +3349,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -3367,7 +3388,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3386,7 +3407,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3409,7 +3430,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3420,6 +3442,8 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+
+## **Prevalencia en la pareja**
 
 <div style="text-align: justify">
 
@@ -3441,8 +3465,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -3493,7 +3517,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3522,7 +3546,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3545,7 +3569,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3575,8 +3600,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -3626,7 +3651,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3655,7 +3680,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3678,7 +3703,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3693,10 +3719,8 @@ cita_formatted <- paste(
 
 <br />
 
-# Cuidados y educación
-
- 
-<br />
+# **Cuidados y educación**
+## **Participación en cuidados**
 
 <div style="text-align: justify">
 
@@ -3740,8 +3764,8 @@ periodo_formatted <- paste(
 ##### **Tasa de participación de mujeres y varones entre 14 y 49 años según presencia de menores en el hogar**
 ##### Total país, `r periodo_formatted`
 </div>
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -3790,7 +3814,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3825,7 +3849,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3848,7 +3872,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -3870,6 +3895,8 @@ nota_formatted <- paste(
 
 <br />
 
+
+
 <div style="text-align: justify">
 
 Los siguientes indicadores reflejan la distribución de las tareas de cuidados entre personas familiares o no familiares, pudiendo comprender las diferencias por sexo y rol de parentesco, tanto cotidianamente como cuando surgen emergentes que es necesario atender.  
@@ -3889,8 +3916,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -3938,7 +3965,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -3969,7 +3996,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -3992,7 +4019,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4024,8 +4052,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -4077,7 +4105,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4108,7 +4136,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4131,7 +4159,7 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
 
 
 ```{r}
@@ -4163,8 +4191,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 ```{r, out.width='100%'}
 #===============================================================================
@@ -4211,7 +4239,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4242,7 +4270,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4265,7 +4293,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4278,6 +4307,8 @@ cita_formatted <- paste(
 
 
 <br />
+
+## **Asistencia a centros educativos**
 
 <div style="text-align: justify">
 Los siguientes indicadores dan cuenta de la asistencia a centros de cuidado y educación por parte de niños y niñas entre 0 y 5 años de edad. Es posible observar que tanto la asistencia de niños/as entre 0 y 2 años como entre 3 y 5 años aumenta en los períodos considerados. En el caso de los niños/as de 0 a 2 años puede verse que el porcentaje de asistencia pasa de 27,1% en 2012 a 38% en 2019. Por su parte, el porcentaje de asistencia de niños/as de 3 a 5 años aumenta de 55,7% en 1990 a 90,4% en 2019. 
@@ -4299,8 +4330,8 @@ periodo_formatted <- paste(
 ##### Total país, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -4329,7 +4360,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4346,7 +4377,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4369,7 +4400,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4407,8 +4439,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -4438,7 +4470,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4455,7 +4487,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4478,7 +4510,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4501,7 +4534,7 @@ nota_formatted <- paste(
 
 <br />
 
-# Salud infantil
+# **Salud infantil**
 
  
 <br />
@@ -4513,6 +4546,8 @@ La salud infantil refiere a la posibilidad de que los niños y niñas puedan sat
 
 </div>
 <br />
+
+## **Lactancia**
 
 <div style="text-align: justify">
 
@@ -4533,8 +4568,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 
 </div>
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -4575,7 +4610,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4598,7 +4633,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4621,7 +4656,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4635,6 +4671,8 @@ cita_formatted <- paste(
 
 
 <br />
+
+## **Peso al nacer**
 
 <div style="text-align: justify">
 
@@ -4656,8 +4694,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 
 </div>
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -4696,7 +4734,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4719,7 +4757,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4742,7 +4780,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4776,8 +4815,8 @@ periodo_formatted <- paste(
 ##### País urbano, `r periodo_formatted`
 </div>
 
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 ```{r, out.width='100%'}
@@ -4817,7 +4856,7 @@ ggplotly(g1) %>%
 
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4840,7 +4879,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4863,7 +4902,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -4877,9 +4917,8 @@ cita_formatted <- paste(
 <br />
 
 
+## **Cobertura de salud**
 
-
-<br />
 
 <div style="text-align: justify">
 El siguiente indicador da cuenta del porcentaje de niños y niñas que no tienen ningún tipo de cobertura en salud. Por un lado, puede verse que el porcentaje de niños/as sin cobertura es mayor a medida que aumenta el tramo de edad considerado, en particular, hasta 2010. A su vez, se observa una disminunción marcada de los niños/as sin cobertura de salud para los tres tramos de edad considerados a lo largo del período, llegando a niveles menores al 1% a partir de 2013. En el segundo semestre de 2021, el valor del indicador se ubica levamente por encima del 1%.  
@@ -4902,8 +4941,8 @@ periodo_formatted <- paste(
 ##### **Porcentaje de niños entre 0 y 17 años sin cobertura de salud**
 ##### País urbano, `r periodo_formatted`
 </div>
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -4940,7 +4979,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -4964,7 +5003,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -4987,7 +5026,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -5008,6 +5048,7 @@ nota_formatted <- paste(
 
 <br />
 
+## **Mortalidad**
 
 <div style="text-align: justify">
 El siguiente indicador da cuenta de la cantidad de defunciones de menores de 1 año y menores de 5 años cada 1000 habitantes. Es posible observar que desde 1984 hasta 2021 ambas tasas se han reducido sustancialmente. La tasa de mortalidad para niños/as menores de 1 año pasa de 30,1 a 6,3 en el período considerado, mientras la tasa de mortalidad para niños/as menores de 5 años pasa de 34,1 a 7,5. 
@@ -5030,8 +5071,8 @@ periodo_formatted <- paste(
 ##### **Tasa de mortalidad infantil (menores de 1 año y de 5 años)**
 ##### Total país, `r periodo_formatted`
 </div>
-## {.tabset .tabset-fade .tabset-pills}
-### Gráfico
+### {.tabset .tabset-fade .tabset-pills}
+#### Gráfico
 
 
 
@@ -5066,7 +5107,7 @@ ggplotly(g1) %>%
 #===============================================================================
 ```
 
-### Descargar Tabla
+#### Tabla
 
 
 ```{r}
@@ -5089,7 +5130,7 @@ DT::datatable(t1, extensions =  'Buttons', options =  list(dom = 'Bfrtip',
 ```
 
 
-### Ficha Técnica
+#### Ficha Técnica
 
 
 ```{r}
@@ -5112,7 +5153,8 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
-##
+## {.toc-ignore .unlisted .unnumbered}
+
 
 
 ```{r}
@@ -5123,6 +5165,15 @@ cita_formatted <- paste(
 ```
 `r cita_formatted` 
 
+
+<br />
 <br />
 
 
+
+# **Referencias**
+## **Contacto**	
+
+Si tiene consultas, sugerencias, comentarios o encontró algún error en este documento, le agradecemos que se contacte con nosotros/as.
+
+**Contacto: umad@cienciassociales.edu.uy**

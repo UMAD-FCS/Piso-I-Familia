@@ -1,0 +1,31 @@
+.boxed {
+        background: #D6EAF8;
+        color: #154360;
+        margin: 3px auto;
+        width: 600px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 3px solid #154360;
+      }
+
+h2 { /* Header 2 */
+    font-size: 22px;
+}
+
+h3 { /* Header 3 */
+    font-size: 18px;
+}
+
+.button_small {
+  font-size: 14px;
+  width: 150px;
+  height: 30px;
+  text-align: center;
+}
+
+/* Whole document: */
+body{
+  font-family: Roboto;
+  font-size: 12pt;
+  text-align: justify;
+}
