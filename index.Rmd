@@ -204,14 +204,261 @@ def_formatted <- paste(
 ```
 > **Definición:** `r def_formatted`
 
-
 ```{r}
 calc <- strsplit(paste0(ficha [1,"FORMA DE CÁLCULO"])," ")[[1]]
 calc_formatted <- paste(
   text_spec(calc, color = 1, font_size = 16, align = "justify"),
   collapse = " ")
 ```
+
 > **Forma de cálculo:** `r calc_formatted`
+
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de los hogares según tipo de hogar
+
+## Total país
+
+sem1_h_svy_1 <- sem1_h_svy %>%
+  filter(tipo_hogar>0)
+sem2_implant_h_svy_1 <- sem2_implant_h_svy %>%
+  filter(tipo_hogar>0)
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+a_sem <- sapply(sem1_h_svy_1$variables %>% select(var_int), function(x){
+  sem1_h_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_h_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_h_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano <- matrix(,8,1)
+for (i in 1:8) {
+  c_ano[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+rownames(c_ano) <- c("Unipersonal",
+                     "Pareja sin hijos",
+                     "Biparental",
+                     "Monoparental femenino",
+                     "Monoparental masculino",
+                     "Extendido o compuesto",
+                     "Extendido con núcleo monoparental",
+                     "Sin núcleo")
+colnames(c_ano)<- c("Total")
+estimacion2021 <- c_ano
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -377,6 +624,296 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de los hogares según tipo de hogar
+
+## Total país
+
+sem1_h_svy_1 <- sem1_h_svy %>%
+  filter(tipo_hogar>0)
+sem2_implant_h_svy_1 <- sem2_implant_h_svy %>%
+  filter(tipo_hogar>0)
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+# Quintil de ingreso del hogar
+a_quintil <- function(y) {
+  base <- subset(sem1_h_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  a_e_quintil[,i] <- a_quintil(y = i)
+}
+
+b_quintil <- function(y) {
+  base <- subset(sem2_implant_h_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  b_e_quintil[,i] <- b_quintil(y = i)
+}
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+rownames(c_quintil) <- c("Unipersonal",
+                     "Pareja sin hijos",
+                     "Biparental",
+                     "Monoparental femenino",
+                     "Monoparental masculino",
+                     "Extendido o compuesto",
+                     "Extendido con núcleo monoparental",
+                     "Sin núcleo")
+colnames(c_quintil)<- c("Quintil 1",
+                        "Quintil 2",
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
+
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -538,7 +1075,270 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
 
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+
+sem1 <- sem1 %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases menores de 18 ###                                
+sem1_men <- sem1 %>%  filter(men18h >0)
+sem2_men <- sem2_implant %>%  filter(men18h >0)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+sem1_h_men <- sem1_men %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h_men <- sem2_men %>% distinct(ID, .keep_all = TRUE)
+
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+sem1_h_men_svy         <- srvyr::as_survey_design(sem1_h_men, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+sem2_implant_h_men_svy <- srvyr::as_survey_design(sem2_implant_h_men, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de hogares con menores según tipo de hogar
+
+## Total país
+
+sem1_h_men_svy_1 <- sem1_h_men_svy %>%
+  filter(tipo_hogar>0)
+sem2_implant_h_men_svy_1 <- sem2_implant_h_men_svy %>%
+  filter(tipo_hogar>0)
+
+
+# Total
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+a_sem <- sapply(sem1_h_men_svy_1$variables %>% select(var_int), function(x){
+  sem1_h_men_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_h_men_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_h_men_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano <- matrix(,8,1)
+for (i in 1:8) {
+  c_ano[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+rownames(c_ano) <- c("Unipersonal",
+                     "Pareja sin hijos",
+                     "Biparental",
+                     "Monoparental femenino",
+                     "Monoparental masculino",
+                     "Extendido o compuesto",
+                     "Extendido con núcleo monoparental",
+                     "Sin núcleo")
+colnames(c_ano)<- c("Total")
+estimacion2021 <- c_ano
+
+
+```
 ## {.toc-ignore .unlisted .unnumbered}
 
 
@@ -701,6 +1501,315 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+sem1 <- sem1 %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases menores de 18 ###                                
+sem1_men <- sem1 %>%  filter(men18h >0)
+sem2_men <- sem2_implant %>%  filter(men18h >0)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+sem1_h_men <- sem1_men %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h_men <- sem2_men %>% distinct(ID, .keep_all = TRUE)
+
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+sem1_h_men_svy         <- srvyr::as_survey_design(sem1_h_men, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+sem2_implant_h_men_svy <- srvyr::as_survey_design(sem2_implant_h_men, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de hogares con menores según tipo de hogar
+
+## Total país
+
+sem1_h_men_svy_1 <- sem1_h_men_svy %>%
+  filter(tipo_hogar>0)
+sem2_implant_h_men_svy_1 <- sem2_implant_h_men_svy %>%
+  filter(tipo_hogar>0)
+
+
+# Total
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+# Quintil de ingreso del hogar
+a_quintil <- function(y) {
+  base <- subset(sem1_h_men_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  a_e_quintil[,i] <- a_quintil(y = i)
+}
+
+b_quintil <- function(y) {
+  base <- subset(sem2_implant_h_men_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  b_e_quintil[,i] <- b_quintil(y = i)
+}
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+
+rownames(c_quintil) <- c("Unipersonal",
+                     "Pareja sin hijos",
+                     "Biparental",
+                     "Monoparental femenino",
+                     "Monoparental masculino",
+                     "Extendido o compuesto",
+                     "Extendido con núcleo monoparental",
+                     "Sin núcleo")
+colnames(c_quintil)<- c("Quintil 1", 
+                        "Quintil 2", 
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -860,6 +1969,257 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+###Menores de 15 
+sem1 <- sem1 %>% dplyr::mutate(men15 = case_when(bc_pe3<15 ~ 1, bc_pe3>=15 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men15 = case_when(bc_pe3<15 ~ 1, bc_pe3>=15 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men15h=max(men15)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men15h=max(men15)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de hogares con menores de 15 años según tipo de hogar
+
+##Total país
+sem1_h_svy_1_men <- sem1_h_svy %>%
+  filter(men15h==1 & tipo_hogar>0)
+sem2_implant_h_svy_1_men <- sem2_implant_h_svy %>%
+  filter(men15h==1 & tipo_hogar>0)
+
+##Total
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+a_sem <- sapply(sem1_h_svy_1_men$variables %>% select(var_int), function(x){
+  sem1_h_svy_1_men %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_h_svy_1_men$variables %>% select(var_int), function(x){
+  sem2_implant_h_svy_1_men %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano <- matrix(,8,1)
+for (i in 1:8) {
+  c_ano[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+rownames(c_ano) <- c("Unipersonal",
+                     "Pareja sin hijos",
+                     "Biparental",
+                     "Monoparental femenino",
+                     "Monoparental masculino",
+                     "Extendido o compuesto",
+                     "Extendido con núcleo monoparental",
+                     "Sin núcleo")
+colnames(c_ano)<- c("Total")
+estimacion2021 <- c_ano
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -882,8 +2242,6 @@ nota_formatted <- paste(
 `r nota_formatted`
 
 <br />
-
-
 
 
 <div style="text-align: justify">
@@ -1022,6 +2380,305 @@ calc_formatted <- paste(
   collapse = " ")
 ```
 > **Forma de cálculo:** `r calc_formatted`
+
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+#Tipo de hogar
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(bc_pe4==1 ~ 1, bc_pe4!=1 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(hijos = case_when(bc_pe4==3 ~ 1, bc_pe4!=3 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_pariente = case_when(bc_pe4==4|bc_pe4==5 ~ 1, bc_pe4!=4&bc_pe4!=5 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(otro_nopariente = case_when(bc_pe4==6 ~ 1, bc_pe4!=6 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(servicio_domestico = case_when(bc_pe4==7 ~ 1, bc_pe4!=7 ~ 0))
+
+sem1 <- sem1 %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefatura_femenina = case_when(bc_pe4==1&bc_pe2==2 ~ 1, bc_pe4!=1|bc_pe2!=2 ~ 0))
+
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumhijo=sum(hijos)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumotro_pariente=sum(otro_pariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumno_pariente=sum(otro_nopariente)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumservicio_domestico=sum(servicio_domestico)) %>% as.data.frame()
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefatura_femenina=sum(jefatura_femenina)) %>% as.data.frame()
+
+
+#Constuyendo tipo de hogar#
+
+#1.UNIPERSONAL 
+#2. PAREJA SIN HIJOS
+#3. BIPARENTAL 
+#4. MONOPARENTAL FEMENINO 
+#5. MONOPARENTAL MASCULINO 
+#6. EXTENDIDO O COMPUESTO 
+#7. EXTENDIDO O COMPUESTO CON NÚCLEO MONOPARENTAL
+#8. SIN NÚCLEO CONYUGAL
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar = case_when(sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                      sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                      (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                      sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                      (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                      (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                      (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem1 <- sem1 %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem1 <- mutate_at(sem1, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar = case_when (sumesposo_companero==0 & sumhijo==0 & sumno_pariente==0 & sumotro_pariente==0 ~ 1, 
+                                                                       sumesposo_companero>=1 & sumhijo==0 & sumotro_pariente==0 & sumno_pariente==0 ~ 2, 
+                                                                       (sumesposo_companero>=1 & sumhijo>=1)& sumotro_pariente==0 & sumno_pariente==0 ~ 3, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==1 & sumno_pariente==0 ~ 4, 
+                                                                       sumesposo_companero==0 & sumhijo>=1 & sumotro_pariente==0 & sumjefatura_femenina==0 & sumno_pariente==0 ~ 5, 
+                                                                       (sumotro_pariente>=1 | sumno_pariente>=1)&sumjefatura_femenina==0 ~ 6, 
+                                                                       (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumotro_pariente>=1) | (sumesposo_companero==0 &sumhijo>0&sumjefatura_femenina==1&sumno_pariente>=1) ~ 7,
+                                                                       (sumotro_pariente >=1 | sumno_pariente >=1) & (sumesposo_companero==0 & sumhijo==0) ~ 8))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar1 = case_when(tipo_hogar==1 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar2 = case_when(tipo_hogar==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar3 = case_when(tipo_hogar==3 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar4 = case_when(tipo_hogar==4 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar5 = case_when(tipo_hogar==5 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar6 = case_when(tipo_hogar==6 ~ 1)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar7 = case_when(tipo_hogar==7 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(tipo_hogar8 = case_when(tipo_hogar==8 ~ 1))
+sem2_implant <- mutate_at(sem2_implant, c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5","tipo_hogar6", "tipo_hogar7", "tipo_hogar8"), ~replace(., is.na(.), 0))
+
+
+###Menores de 15 
+sem1 <- sem1 %>% dplyr::mutate(men15 = case_when(bc_pe3<15 ~ 1, bc_pe3>=15 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men15 = case_when(bc_pe3<15 ~ 1, bc_pe3>=15 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men15h=max(men15)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men15h=max(men15)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de hogares con menores de 15 años según tipo de hogar y quintil de ingresos
+
+##Total país
+sem1_h_men_svy_1 <- sem1_h_svy %>%
+  filter(men15h==1 & tipo_hogar>0)
+sem2_implant_h_men_svy_1 <- sem2_implant_h_svy %>%
+  filter(men15h==1 & tipo_hogar>0)
+
+# Total
+
+var_int <- c("tipo_hogar1", "tipo_hogar2", "tipo_hogar3", "tipo_hogar4", "tipo_hogar5", "tipo_hogar6", "tipo_hogar7", "tipo_hogar8")
+# Quintil de ingreso del hogar
+a_quintil <- function(y) {
+  base <- subset(sem1_h_men_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  a_e_quintil[,i] <- a_quintil(y = i)
+}
+
+b_quintil <- function(y) {
+  base <- subset(sem2_implant_h_men_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_quintil = matrix(, nrow = 8, ncol = 5)
+
+for(i in 1:5){
+  b_e_quintil[,i] <- b_quintil(y = i)
+}
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+
+rownames(c_quintil) <- c("Unipersonal",
+                         "Pareja sin hijos",
+                         "Biparental",
+                         "Monoparental femenino",
+                         "Monoparental masculino",
+                         "Extendido o compuesto",
+                         "Extendido con núcleo monoparental",
+                         "Sin núcleo")
+colnames(c_quintil)<- c("Quintil 1", 
+                        "Quintil 2", 
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 
 ## {.toc-ignore .unlisted .unnumbered}
@@ -1188,6 +2845,66 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 ## {.toc-ignore .unlisted .unnumbered}
 
 
@@ -1344,6 +3061,350 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+### Modelo de pareja
+sem1 <- sem1 %>% dplyr::mutate(bc_pobp = POBPCOAC)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pobp = pobpcoac)
+
+sem1 <- sem1 %>% dplyr::mutate(bc_horas = F85+F98)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_horas = f85+f98)
+
+sem1 <- sem1 %>% dplyr::mutate(bc_horas_1 = F85)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_horas_1 = f85)
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+# Relación de parentesco
+sem1 <- sem1 %>% dplyr::mutate(bc_pe4 = case_when(e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                  e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe4 = case_when (e30==1 ~ 1, e30==2 ~ 2, e30 ==3|e30==4|e30==5 ~ 3, e30==6|e30==7 ~ 4, 
+                                                                   e30==8|e30==9|e30==10|e30==11|e30==12 ~ 5, e30==13 ~ 6, e30==14 ~ 7))
+
+sem1 <- sem1 %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(esposo_companero = case_when(bc_pe4==2 ~ 1, bc_pe4!=2 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumesposo_companero=sum(esposo_companero)) %>% as.data.frame()
+
+
+#generamos la variable que identifica hogares en donde hay una pareja 
+
+sem1 <- sem1 %>% dplyr::mutate(biparentales = case_when(sumesposo_companero>0 ~ 1, sumesposo_companero==0 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(biparentales = case_when(sumesposo_companero>0 ~ 1, sumesposo_companero==0 ~ 0))
+
+#Nos quedamos solo con los hogares biparentales*
+
+
+#generamos variables a nivel agregado
+#Primero generamos variable a nivel personas*
+
+#JEFE Ocupado tiempo completo_varón*
+sem1 <- sem1 %>% dplyr::mutate(jefeocup_tc_v = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeocup_tc_v = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+#JEFE Ocupado tiempo completo_mujer*
+sem1 <- sem1 %>% dplyr::mutate(jefeocup_tc_m = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeocup_tc_m = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+#CONYUGE Ocupado tiempo completo*
+sem1 <- sem1 %>% dplyr::mutate(conyocup_tc_v = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyocup_tc_v = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+sem1 <- sem1 %>% dplyr::mutate(conyocup_tc_m = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyocup_tc_m = case_when(bc_pobp==2 & (bc_horas>39 | bc_horas_1>39) & esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+#JEFE Ocupado medio tiempo_varón*
+sem1 <- sem1 %>% dplyr::mutate(jefeocup_mt_v = case_when(bc_pobp==2 & bc_horas<40 & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeocup_mt_v = case_when(bc_pobp==2 & bc_horas<40 & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+#JEFE Ocupado medio tiempo_mujer*
+sem1 <- sem1 %>% dplyr::mutate(jefeocup_mt_m = case_when(bc_pobp==2 & bc_horas<40& jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeocup_mt_m = case_when(bc_pobp==2 & bc_horas<40& jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+#CONYUGE Ocupado medio tiempo_varón*
+sem1 <- sem1 %>% dplyr::mutate(conyocup_mt_v = case_when(bc_pobp==2 & bc_horas<40& esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyocup_mt_v = case_when(bc_pobp==2 & bc_horas<40& esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+#CONYUGE Ocupado medio tiempo_mujer*
+sem1 <- sem1 %>% dplyr::mutate(conyocup_mt_m = case_when(bc_pobp==2 & bc_horas<40& esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyocup_mt_m = case_when(bc_pobp==2 & bc_horas<40& esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+#JEFE Inactivo o desempleado_varón*
+sem1 <- sem1 %>% dplyr::mutate(jefeinact_desoc_v = case_when(bc_pobp>2 & bc_pobp<12 & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeinact_desoc_v = case_when(bc_pobp>2 & bc_pobp<12 & jefe==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+#JEFE Inactivo o desempleado_mujer*
+sem1 <- sem1 %>% dplyr::mutate(jefeinact_desoc_m = case_when(bc_pobp>2 & bc_pobp<12 & jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefeinact_desoc_m = case_when(bc_pobp>2 & bc_pobp<12 & jefe==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+#CONYUGE Inactivo o desempleado_varón*
+sem1 <- sem1 %>% dplyr::mutate(conyinact_desoc_v = case_when(bc_pobp>2 & bc_pobp<12 & esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyinact_desoc_v = case_when(bc_pobp>2 & bc_pobp<12 & esposo_companero==1 & bc_pe2==1&biparentales==1 ~ 1))
+
+#CONYUGE Inactivo o desempleado_mujer*
+sem1 <- sem1 %>% dplyr::mutate(conyinact_desoc_m = case_when(bc_pobp>2 & bc_pobp<12 & esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(conyinact_desoc_m = case_when(bc_pobp>2 & bc_pobp<12 & esposo_companero==1 & bc_pe2==2&biparentales==1 ~ 1))
+
+
+
+sem1 <- mutate_at(sem1, c("jefeocup_tc_v", "jefeocup_tc_m", "conyocup_tc_v", "conyocup_tc_m", "jefeocup_mt_v", "jefeocup_mt_m", 
+                          "conyocup_mt_v", "conyocup_mt_m", "jefeinact_desoc_v", "jefeinact_desoc_m", "conyinact_desoc_v", "conyinact_desoc_m"), ~replace(., is.na(.), 0))
+sem2_implant <- mutate_at(sem2_implant, c("jefeocup_tc_v", "jefeocup_tc_m", "conyocup_tc_v", "conyocup_tc_m", "jefeocup_mt_v", "jefeocup_mt_m", 
+                                          "conyocup_mt_v", "conyocup_mt_m", "jefeinact_desoc_v", "jefeinact_desoc_m", "conyinact_desoc_v", "conyinact_desoc_m"), ~replace(., is.na(.), 0))
+
+
+#### Segundo, variables agregadas a nivel hogar
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefeocup_tc_m=sum(jefeocup_tc_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefeocup_tc_v=sum(jefeocup_tc_v)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyocup_tc_m=sum(conyocup_tc_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyocup_tc_v=sum(conyocup_tc_v)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefeocup_mt_m=sum(jefeocup_mt_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefeocup_mt_v=sum(jefeocup_mt_v)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyocup_mt_v=sum(conyocup_mt_v)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyocup_mt_m=sum(conyocup_mt_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat)  %>% mutate(sumjefeinact_desoc_m=sum(jefeinact_desoc_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefeinact_desoc_v=sum(jefeinact_desoc_v)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyinact_desoc_m=sum(conyinact_desoc_m)) %>% as.data.frame()
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumconyinact_desoc_v=sum(conyinact_desoc_v)) %>% as.data.frame()
+
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeocup_tc_m=sum(jefeocup_tc_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeocup_tc_v=sum(jefeocup_tc_v)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyocup_tc_m=sum(conyocup_tc_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyocup_tc_v=sum(conyocup_tc_v)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeocup_mt_m=sum(jefeocup_mt_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeocup_mt_v=sum(jefeocup_mt_v)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyocup_mt_v=sum(conyocup_mt_v)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyocup_mt_m=sum(conyocup_mt_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeinact_desoc_m=sum(jefeinact_desoc_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefeinact_desoc_v=sum(jefeinact_desoc_v)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyinact_desoc_m=sum(conyinact_desoc_m)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumconyinact_desoc_v=sum(conyinact_desoc_v)) %>% as.data.frame()
+
+
+#### Generamos la variable de modelos de pareja con las categorías de arriba
+#1. PROVEEDOR TRADICIONAL (solo hombre trabaja, mujer inactiva o desempleada)*
+#2 PROVEEDOR MODIFICADO: pareja donde ambos trabajan para el mercado pero el hombre trabaja a tiempo completo y la mujer a tiempo parcial. 
+#3. DOBLE CARRERA:  pareja donde ambos trabajan para el mercado, ambos a tiempo completo o ambos a tiempo parcial. 
+#4. INVERSIÓN DE ROLES: pareja donde sÓlo la mujer trabaja para el mercado y el hombre es inactivo o desocupado. 
+#5. INVERSIÓN DE ROLES MODIFICADO: ambos trabajan en el mercado laboral pero hombre ocupado a tiempo parcial y mujer ocupada a tiempo completo.
+#6. MODELO RESIDUAL: Ambos no trabajan (desocupados o inactivos)
+
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja = case_when(((sumjefeocup_tc_v==1 & sumconyinact_desoc_m==1)|(sumconyocup_tc_v==1 & sumjefeinact_desoc_m==1)|(sumjefeocup_mt_v==1 & sumconyinact_desoc_m==1)|(sumconyocup_mt_v==1 & sumjefeinact_desoc_m==1))&biparentales==1 ~ 1, 
+                                                         ((sumjefeocup_tc_v==1 & sumconyocup_mt_m==1) | (sumconyocup_tc_v==1 & sumjefeocup_mt_m==1))&biparentales==1 ~ 2,
+                                                         ((sumjefeocup_tc_v==1 & sumconyocup_tc_m==1) | (sumjefeocup_tc_m==1 & sumconyocup_tc_v==1)| (sumjefeocup_mt_m==1 & sumconyocup_mt_v==1) | (sumjefeocup_mt_v==1 & sumconyocup_mt_m==1))&biparentales==1 ~3,
+                                                         ((sumjefeocup_tc_m==1 & sumconyinact_desoc_v==1) | (sumconyocup_tc_m==1 & sumjefeinact_desoc_v==1)| (sumjefeocup_mt_m==1 & sumconyinact_desoc_v==1) | (sumconyocup_mt_m==1 & sumjefeinact_desoc_v==1))&biparentales==1 ~4,
+                                                         ((sumjefeocup_tc_m==1 & sumconyocup_mt_v==1) | (sumconyocup_tc_m==1 & sumjefeocup_mt_v==1))&biparentales==1 ~ 5, 
+                                                         ((sumjefeinact_desoc_m==1 & sumconyinact_desoc_v==1) | (sumjefeinact_desoc_v==1 & sumconyinact_desoc_m==1))&biparentales==1 ~6))
+
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja1 = case_when(modelo_pareja==1 ~ 1, modelo_pareja!=1 ~ 0)) 
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja2 = case_when(modelo_pareja==2 ~ 1, modelo_pareja!=2 ~ 0)) 
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja3 = case_when(modelo_pareja==3 ~ 1, modelo_pareja!=3 ~ 0)) 
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja4 = case_when(modelo_pareja==4 ~ 1, modelo_pareja!=4 ~ 0)) 
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja5 = case_when(modelo_pareja==5 ~ 1, modelo_pareja!=5 ~ 0)) 
+sem1 <- sem1 %>% dplyr::mutate(modelo_pareja6 = case_when(modelo_pareja==6 ~ 1, modelo_pareja!=6 ~ 0)) 
+sem1 <- mutate_at(sem1, c("modelo_pareja1", "modelo_pareja2", "modelo_pareja3", "modelo_pareja4", "modelo_pareja5","modelo_pareja6"), ~replace(., is.na(.), 0))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja = case_when(((sumjefeocup_tc_v==1 & sumconyinact_desoc_m==1)|(sumconyocup_tc_v==1 & sumjefeinact_desoc_m==1)|(sumjefeocup_mt_v==1 & sumconyinact_desoc_m==1)|(sumconyocup_mt_v==1 & sumjefeinact_desoc_m==1))&biparentales==1 ~ 1, 
+                                                                         ((sumjefeocup_tc_v==1 & sumconyocup_mt_m==1) | (sumconyocup_tc_v==1 & sumjefeocup_mt_m==1))&biparentales==1 ~ 2,
+                                                                         ((sumjefeocup_tc_v==1 & sumconyocup_tc_m==1) | (sumjefeocup_tc_m==1 & sumconyocup_tc_v==1)| (sumjefeocup_mt_m==1 & sumconyocup_mt_v==1) | (sumjefeocup_mt_v==1 & sumconyocup_mt_m==1))&biparentales==1 ~3,
+                                                                         ((sumjefeocup_tc_m==1 & sumconyinact_desoc_v==1) | (sumconyocup_tc_m==1 & sumjefeinact_desoc_v==1)| (sumjefeocup_mt_m==1 & sumconyinact_desoc_v==1) | (sumconyocup_mt_m==1 & sumjefeinact_desoc_v==1))&biparentales==1 ~4,
+                                                                         ((sumjefeocup_tc_m==1 & sumconyocup_mt_v==1) | (sumconyocup_tc_m==1 & sumjefeocup_mt_v==1))&biparentales==1 ~ 5, 
+                                                                         ((sumjefeinact_desoc_m==1 & sumconyinact_desoc_v==1) | (sumjefeinact_desoc_v==1 & sumconyinact_desoc_m==1))&biparentales==1 ~6))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja1 = case_when(modelo_pareja==1 ~ 1, modelo_pareja!=1 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja2 = case_when(modelo_pareja==2 ~ 1, modelo_pareja!=2 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja3 = case_when(modelo_pareja==3 ~ 1, modelo_pareja!=3 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja4 = case_when(modelo_pareja==4 ~ 1, modelo_pareja!=4 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja5 = case_when(modelo_pareja==5 ~ 1, modelo_pareja!=5 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(modelo_pareja6 = case_when(modelo_pareja==6 ~ 1, modelo_pareja!=6 ~ 0)) 
+sem2_implant <- mutate_at(sem2_implant, c("modelo_pareja1", "modelo_pareja2", "modelo_pareja3", "modelo_pareja4", "modelo_pareja5","modelo_pareja6"), ~replace(., is.na(.), 0))
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de los hogares biparentales según modelo de pareja
+
+## Total país
+
+sem1_h_svy_1 <- sem1_h_svy %>%
+  filter(modelo_pareja>0)
+sem2_implant_h_svy_1 <- sem2_implant_h_svy %>%
+  filter(modelo_pareja>0)
+
+# Quintil de ingresos
+
+var_int <- c("modelo_pareja1", "modelo_pareja2", "modelo_pareja3", "modelo_pareja4", "modelo_pareja5", "modelo_pareja6")
+a_quintil <- function(y) {
+  base <- subset(sem1_h_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_quintil = matrix(, nrow = 6, ncol = 5)
+
+for(i in 1:5){
+  a_e_quintil[,i] <- a_quintil(y = i)
+}
+
+b_quintil <- function(y) {
+  base <- subset(sem2_implant_h_svy_1, quintilesy == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_quintil = matrix(, nrow = 6, ncol = 5)
+
+for(i in 1:5){
+  b_e_quintil[,i] <- b_quintil(y = i)
+}
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+
+
+rownames(c_quintil) <-   c("Proveedor tradicional",
+                           "Proveedor modificado",
+                           "Doble carrera",
+                           "Inversión de roles",
+                           "Inversión de roles modificado",
+                           "Residual" )
+
+colnames(c_quintil)<- c("Quintil 1",
+                        "Quintil 2",
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 ## {.toc-ignore .unlisted .unnumbered}
 
 
@@ -1369,6 +3430,8 @@ nota_formatted <- paste(
 
 
 <br />
+
+
 ## **Estado civil**
 
 <div style="text-align: justify">
@@ -1494,6 +3557,68 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -1640,6 +3765,169 @@ calc_formatted <- paste(
 > **Forma de cálculo:** `r calc_formatted`
 
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+# Sexo del jefe/a de hogar
+sem1 <- sem1[order(sem1$numero, sem1$e30, decreasing = FALSE), ]
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & bc_pe2 == 1 ~ 1,
+                                                        e30 == 1 & bc_pe2 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem1_h <- sem1_h[,c("numero","sexojefe")]
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem1 <- merge(sem1, sem1_h, by = "numero")
+sem1 <- sem1 %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1 <- sem1 %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_implant <- sem2_implant[order(as.numeric(sem2_implant$ID), sem2_implant$e30, decreasing = FALSE), ]
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & e26 == 1 ~ 1,
+                                                        e30 == 1 & e26 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_h <- sem2_h[,c("ID","sexojefe")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Distribución porcentual de los hogares según sexo del jefe/a del hogar
+
+## Total país
+
+# Total
+
+var_int <- c("sexojefe1", "sexojefe2")
+a_sem <- sapply(sem1_h_svy$variables %>% select(var_int), function(x){
+  sem1_h_svy %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_h_svy$variables %>% select(var_int), function(x){
+  sem2_implant_h_svy %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+
+rownames(c_ano) <-    c("Varón",
+                        "Mujer")
+
+colnames(c_ano)<- c("Total")
+estimacion2021 <- c_ano
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 ## {.toc-ignore .unlisted .unnumbered}
 
 
@@ -1757,6 +4045,215 @@ calc_formatted <- paste(
   collapse = " ")
 ```
 > **Forma de cálculo:** `r calc_formatted`
+
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Región
+sem1 <- sem1 %>% dplyr::mutate(bd_region = case_when(region_4 == 1 | region_4 == 2 ~ 1,
+                                                     region_4 == 3 ~ 2,
+                                                     region_4 == 4 ~ 3))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(bd_region = case_when(region_4 == 1 | region_4 == 2 ~ 1,region_4 == 3 ~ 2,region_4 == 4 ~ 3))
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+# Sexo del jefe/a de hogar
+sem1 <- sem1[order(sem1$numero, sem1$e30, decreasing = FALSE), ]
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & bc_pe2 == 1 ~ 1,
+                                                        e30 == 1 & bc_pe2 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem1_h <- sem1_h[,c("numero","sexojefe")]
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem1 <- merge(sem1, sem1_h, by = "numero")
+sem1 <- sem1 %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1 <- sem1 %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_implant <- sem2_implant[order(as.numeric(sem2_implant$ID), sem2_implant$e30, decreasing = FALSE), ]
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & e26 == 1 ~ 1,
+                                                        e30 == 1 & e26 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_h <- sem2_h[,c("ID","sexojefe")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de  hogares con jefatura femenina según región de residencia
+
+## Total país
+var_int <- c("sexojefe1", "sexojefe2")
+
+a_sem <- sapply(sem1_h_svy$variables %>% select(var_int), function(x){
+  sem1_h_svy %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_h_svy$variables %>% select(var_int), function(x){
+  sem2_implant_h_svy %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+# Región
+
+a_reg <- function(y) {
+  base <- subset(sem1_h_svy, bd_region == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_reg = matrix(, nrow = 2, ncol = 3)
+
+for(i in 1:3){
+  a_e_reg[,i] <- a_reg(y = i)
+}
+
+b_reg <- function(y) {
+  base <- subset(sem2_implant_h_svy, bd_region == y) 
+  resultados  <-  sapply(base$variables %>% select(var_int), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_reg = matrix(, nrow = 2, ncol = 3)
+
+for(i in 1:3){
+  b_e_reg[,i] <- b_reg(y = i)
+}
+
+c_reg <- as.data.frame(cbind(a_e_reg[2,1:3], b_e_reg[2,1:3]))
+c_reg <- c_reg %>% dplyr::mutate(m_reg = (a_e_reg[2,1:3] + b_e_reg[2,1:3])/2)
+c_reg <- c_reg[,c("m_reg")]
+c_reg <- as.data.frame(c(c_reg, c_ano[2]))
+
+colnames(c_reg) <-    c("Mujer")
+rownames(c_reg)<- c("Urbano (Más de 5.000 habitantes)",
+                    "Urbano (Menos de 5.000 habitantes)",
+                    "Rural disperso", 
+                    "Total país")
+estimacion2021 <- c_reg
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 
 
 ## {.toc-ignore .unlisted .unnumbered}
@@ -1890,6 +4387,206 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+# Sexo del jefe/a de hogar
+sem1 <- sem1[order(sem1$numero, sem1$e30, decreasing = FALSE), ]
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & bc_pe2 == 1 ~ 1,
+                                                        e30 == 1 & bc_pe2 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem1_h <- sem1_h[,c("numero","sexojefe")]
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem1 <- merge(sem1, sem1_h, by = "numero")
+sem1 <- sem1 %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1 <- sem1 %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_implant <- sem2_implant[order(as.numeric(sem2_implant$ID), sem2_implant$e30, decreasing = FALSE), ]
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & e26 == 1 ~ 1,
+                                                        e30 == 1 & e26 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_h <- sem2_h[,c("ID","sexojefe")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+sem1 <- sem1 %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad
+
+## Total país
+sem1_h_svy <- sem1_h_svy %>% dplyr::mutate(menorH=men18h)
+sem2_implant_h_svy <- sem2_implant_h_svy %>% dplyr::mutate(menorH=men18h)
+
+a_mes <- sem1_h_svy %>%
+  srvyr::group_by(mes) %>%
+  srvyr::summarise(colname = srvyr::survey_mean(menorH))
+a_sem <- mean(as.numeric(a_mes$colname))
+
+b_sem <- sem2_implant_h_svy %>%
+  srvyr::summarise(colname = srvyr::survey_mean(menorH))
+b_sem <- as.numeric(b_sem$colname)
+
+c_ano <- mean(c(a_sem, b_sem))
+
+
+# Sexo del jefe
+
+a_jefe <- function(x) {
+  x <- sem1_h_svy %>%
+    filter(sexojefe == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_jefe <- numeric()
+
+for(i in 1:2){
+  a_e_jefe[i] <- a_jefe(x = i)
+}     
+
+b_jefe <- function(x) {
+  x <- sem2_implant_h_svy %>%
+    filter(sexojefe == x) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+b_e_jefe <- numeric()
+
+for(i in 1:2){
+  b_e_jefe[i] <- b_jefe(x = i)
+}         
+
+c_jefe <- as.data.frame(cbind(a_e_jefe, b_e_jefe))
+c_jefe <- c_jefe %>% dplyr::mutate(m_jefe = (a_e_jefe + b_e_jefe)/2)
+c_jefe <- c_jefe[,c("m_jefe")]
+c_jefe <- as.data.frame(rbind(c_jefe, c_ano))
+
+colnames(c_jefe) <-    c("Hogares con menores entre 0 y 17 años")
+rownames(c_jefe)<- c("Varones", "Mujeres","Total")
+estimacion2021 <- c_jefe
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -2007,6 +4704,185 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+sem1 <- sem1 %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(men18 = case_when(bc_pe3<18 ~ 1, bc_pe3>=18 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(men18h=max(men18)) %>% as.data.frame()
+
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de hogares en los que residen menores entre 0 y 17 años de edad, según quintil
+
+sem1_h_svy <- sem1_h_svy %>% dplyr::mutate(menorH=men18h)
+sem2_implant_h_svy <- sem2_implant_h_svy %>% dplyr::mutate(menorH=men18h)
+
+# Quintil de ingreso del hogar
+
+a_quintil <- function(x) {
+  x <- sem1_h_svy %>%
+    filter(quintilesy == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_quintil <- numeric()
+
+for(i in 1:5){
+  a_e_quintil[i] <- a_quintil(x = i)
+}     
+
+b_quintil <- function(x) {
+  x <- sem2_implant_h_svy %>%
+    filter(quintilesy == x) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+b_e_quintil <- numeric()
+
+for(i in 1:5){
+  b_e_quintil[i] <- b_quintil(x = i)
+}         
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+c_quintil <- as.data.frame(c_quintil)
+
+colnames(c_quintil) <-    c("Hogares con menores entre 0 y 17 años")
+rownames(c_quintil)<- c("Quintil 1", 
+                        "Quintil 2",
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -2131,6 +5007,203 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+
+# Sexo del jefe/a de hogar
+sem1 <- sem1[order(sem1$numero, sem1$e30, decreasing = FALSE), ]
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & bc_pe2 == 1 ~ 1,
+                                                        e30 == 1 & bc_pe2 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem1_h <- sem1_h[,c("numero","sexojefe")]
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1_h <- sem1_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem1 <- merge(sem1, sem1_h, by = "numero")
+sem1 <- sem1 %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem1 <- sem1 %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_implant <- sem2_implant[order(as.numeric(sem2_implant$ID), sem2_implant$e30, decreasing = FALSE), ]
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe = case_when(e30 == 1 & e26 == 1 ~ 1,
+                                                        e30 == 1 & e26 == 2 ~ 2,
+                                                        e30 != 1 ~ 99))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_h <- sem2_h %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+sem2_h <- sem2_h[,c("ID","sexojefe")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe1 = case_when(sexojefe==1 ~ 1, sexojefe!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(sexojefe2 = case_when(sexojefe==2 ~ 1, sexojefe!=2 ~ 0))
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+###Mayores de 64  
+sem1 <- sem1 %>% dplyr::mutate(may64 = case_when(bc_pe3>64 ~ 1, bc_pe3<=64 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(may64 = case_when(bc_pe3>64 ~ 1, bc_pe3<=64 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(may64h=max(may64)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(may64h=max(may64)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de hogares en los que residen mayores de 64 años
+
+## Total país
+
+a_mes <- sem1_h_svy %>%
+  srvyr::group_by(mes) %>%
+  srvyr::summarise(colname = srvyr::survey_mean(may64h))
+a_sem <- mean(as.numeric(a_mes$colname))
+
+b_sem <- sem2_implant_h_svy %>%
+  srvyr::summarise(colname = srvyr::survey_mean(may64h))
+b_sem <- as.numeric(b_sem$colname)
+
+c_ano <- mean(c(a_sem, b_sem))
+
+# Sexo del jefe
+
+a_jefe <- function(x) {
+  x <- sem1_h_svy %>%
+    filter(sexojefe == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(may64h))
+  x <- mean(x$colname)
+}       
+
+a_e_jefe <- numeric()
+
+for(i in 1:2){
+  a_e_jefe[i] <- a_jefe(x = i)
+}     
+
+b_jefe <- function(x) {
+  x <- sem2_implant_h_svy %>%
+    filter(sexojefe == x) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(may64h))
+  x <- mean(x$colname)
+}       
+
+b_e_jefe <- numeric()
+
+for(i in 1:2){
+  b_e_jefe[i] <- b_jefe(x = i)
+}         
+
+c_jefe <- as.data.frame(cbind(a_e_jefe, b_e_jefe))
+c_jefe <- c_jefe %>% dplyr::mutate(m_jefe = (a_e_jefe + b_e_jefe)/2)
+c_jefe <- c_jefe[,c("m_jefe")]
+c_jefe <- as.data.frame(c(c_jefe,c_ano))
+
+colnames(c_jefe) <-    c("Hogares con mayores de 64 años")
+rownames(c_jefe)<- c("Varones", "Mujeres", "Total")
+estimacion2021 <- c_jefe
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -2247,6 +5320,181 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Ingresos
+sem1 <- sem1 %>% dplyr::mutate(y_pc       =  HT11 / ht19 )                      #Ingreso per-cápita
+sem1 <- sem1 %>% dplyr::mutate(y_pc_svl   =  (HT11 - HT13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc       =  ht11 / ht19 )                      #Ingreso per-cápita
+sem2_implant <- sem2_implant %>% dplyr::mutate(y_pc_svl   =  (ht11 - ht13) / ht19)              #Ingreso per-cápita sin valor locativo
+
+# Quintil de ingresos
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem1_h <- sem1_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = pesomen))
+sem1_h <- sem1_h[,c("numero","quintilesy")]
+sem1 <- merge(sem1, sem1_h, by = "numero")
+
+sem2_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+sem2_h <- sem2_h %>% dplyr::mutate(quintilesy = statar::xtile(y_pc, n=5, wt = w_sem))
+sem2_h <- sem2_h[,c("ID","quintilesy")]
+sem2_implant <- merge(sem2_implant, sem2_h, by = "ID")   
+
+# Renombro edad
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+
+###Mayores de 64  
+sem1 <- sem1 %>% dplyr::mutate(may64 = case_when(bc_pe3>64 ~ 1, bc_pe3<=64 ~ 0)) 
+sem2_implant <- sem2_implant %>% dplyr::mutate(may64 = case_when(bc_pe3>64 ~ 1, bc_pe3<=64 ~ 0)) 
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(may64h=max(may64)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(may64h=max(may64)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de hogares en los que residen mayores de 64 años
+
+## Total país
+
+# Quintil de ingreso del hogar
+
+a_quintil <- function(x) {
+  x <- sem1_h_svy %>%
+    filter(quintilesy == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(may64h))
+  x <- mean(x$colname)
+}       
+
+a_e_quintil <- numeric()
+
+for(i in 1:5){
+  a_e_quintil[i] <- a_quintil(x = i)
+}     
+
+b_quintil <- function(x) {
+  x <- sem2_implant_h_svy %>%
+    filter(quintilesy == x) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(may64h))
+  x <- mean(x$colname)
+}       
+
+b_e_quintil <- numeric()
+
+for(i in 1:5){
+  b_e_quintil[i] <- b_quintil(x = i)
+}         
+
+c_quintil <- as.data.frame(cbind(a_e_quintil, b_e_quintil))
+c_quintil <- c_quintil %>% dplyr::mutate(m_quintil = (a_e_quintil + b_e_quintil)/2)
+c_quintil <- c_quintil[,c("m_quintil")]
+c_quintil <- as.data.frame(c_quintil)
+colnames(c_quintil) <-    c("Hogares con mayores de 64 años")
+rownames(c_quintil)<- c("Quintil 1", 
+                        "Quintil 2",
+                        "Quintil 3",
+                        "Quintil 4",
+                        "Quintil 5")
+estimacion2021 <- c_quintil
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -3871,6 +7119,253 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Renombro edad
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+### Menores de 4 en el hogar
+sem1 <- sem1 %>% dplyr::mutate(menor4 = case_when(bc_pe3<4 ~ 1, bc_pe3>=4 ~ 0))
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(menor4H=max(menor4)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% dplyr::mutate(menor4 = case_when(bc_pe3<4 ~ 1, bc_pe3>=4 ~ 0))
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(menor4H=max(menor4)) %>% as.data.frame()
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+### Menores de 7 en el hogar
+sem1 <- sem1 %>% dplyr::mutate(menor7 = case_when(bc_pe3<7 ~ 1, bc_pe3>=7 ~ 0))
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(menor7H=max(menor7)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% dplyr::mutate(menor7 = case_when(bc_pe3<7 ~ 1, bc_pe3>=7 ~ 0))
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(menor7H=max(menor7)) %>% as.data.frame()
+
+### Menores de 13 en el hogar
+sem1 <- sem1 %>% dplyr::mutate(menor13 = case_when(bc_pe3<13 ~ 1, bc_pe3>=13 ~ 0))
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(menor13H=max(menor13)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% dplyr::mutate(menor13 = case_when(bc_pe3<13 ~ 1, bc_pe3>=13 ~ 0))
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(menor13H=max(menor13)) %>% as.data.frame()
+
+# Sexo
+sem1 <- sem1 %>% dplyr::mutate(bc_pe2 = E26)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe2 = e26)
+
+##Condición de actividad
+sem1 <- sem1 %>% dplyr::mutate(bc_pobp = POBPCOAC)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pobp = pobpcoac)
+
+###Activos
+sem1 <- sem1 %>% dplyr::mutate(activos1 = case_when(bc_pe2==1&bc_pobp>5 ~ 0, bc_pobp>=2&bc_pobp<=5&bc_pe2==1 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(activos1 = case_when(bc_pe2==1&bc_pobp>5 ~ 0, bc_pobp>=2&bc_pobp<=5&bc_pe2==1 ~ 1))
+
+sem1 <- sem1 %>% dplyr::mutate(activos2 = case_when(bc_pe2==2&bc_pobp>5 ~ 0, bc_pobp>=2&bc_pobp<=5&bc_pe2==2 ~ 1))
+sem2_implant <- sem2_implant %>% dplyr::mutate(activos2 = case_when(bc_pe2==2&bc_pobp>5 ~ 0, bc_pobp>=2&bc_pobp<=5&bc_pe2==2 ~ 1))
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Tasa de participación de mujeres y varones entre 14 y 49 años de edad, según presencia de menores en el hogar
+
+## Sin menores
+
+sem1_svy_1 <- sem1_svy %>%
+  filter(menor13H == 0 & (bc_pe3>13 | bc_pe3<50))
+sem2_implant_svy_1 <- sem2_implant_svy %>%
+  filter(menor13H == 0 & (bc_pe3>13 | bc_pe3<50))
+
+var_int <- c("activos1", "activos2")
+
+a_sem <- sapply(sem1_svy_1$variables %>% select(var_int), function(x){
+  sem1_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano_sin <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano_sin[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+
+##Con menores de 0 a 13
+sem1_svy_1 <- sem1_svy %>%
+  filter(menor13H == 1 & (bc_pe3>13 | bc_pe3<50))
+sem2_implant_svy_1 <- sem2_implant_svy %>%
+  filter(menor13H == 1 & (bc_pe3>13 | bc_pe3<50))
+
+
+var_int <- c("activos1", "activos2")
+a_sem <- sapply(sem1_svy_1$variables %>% select(var_int), function(x){
+  sem1_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano_0a13 <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano_0a13[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+
+##Con menores de 0 a 4
+
+sem1_svy_1 <- sem1_svy %>%
+  filter(menor4H==1 & (bc_pe3>13 | bc_pe3<50))
+sem2_implant_svy_1 <- sem2_implant_svy %>%
+  filter(menor4H==1 & (bc_pe3>13 | bc_pe3<50))
+
+
+# Total
+
+var_int <- c("activos1", "activos2")
+a_sem <- sapply(sem1_svy_1$variables %>% select(var_int), function(x){
+  sem1_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano_0a4 <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano_0a4[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+## Con menores entre 0 y 6
+
+sem1_svy_1 <- sem1_svy %>%
+  filter(menor7H==1 & (bc_pe3>13 | bc_pe3<50))
+sem2_implant_svy_1 <- sem2_implant_svy %>%
+  filter(menor7H==1 & (bc_pe3>13 | bc_pe3<50))
+
+var_int <- c("activos1", "activos2")
+a_sem <- sapply(sem1_svy_1$variables %>% select(var_int), function(x){
+  sem1_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+b_sem <- sapply(sem2_implant_svy_1$variables %>% select(var_int), function(x){
+  sem2_implant_svy_1 %>%
+    srvyr::summarise(stat = srvyr::survey_mean(x, na.rm = TRUE)) 
+})
+
+c_ano_0a6 <- matrix(,2,1)
+for (i in 1:2) {
+  c_ano_0a6[i,1] <- c(mean(as.numeric(c(a_sem[1,i], b_sem[1,i]))))
+}
+
+c_ano <- cbind(c_ano_0a4, c_ano_0a6, c_ano_0a13, c_ano_sin)
+
+rownames(c_ano) <-    c("Varones", "Mujeres")
+colnames(c_ano)<- c("Entre 0 y 3","Entre 0 y 6", "Entre 0 y 12", "Sin menores entre 0 y 12")
+estimacion2021 <- c_ano
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
+
 
 ## {.toc-ignore .unlisted .unnumbered}
 
@@ -5025,6 +8520,155 @@ calc_formatted <- paste(
 ```
 > **Forma de cálculo:** `r calc_formatted`
 
+#### Código en R
+
+```{r, echo=TRUE, eval=FALSE}
+
+### Estimación de valores 2021 ###
+
+# Para sintaxix de años anteriores consultar: 
+# https://osf.io/dyzg8/files/osfstorage#
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de paquetes ###
+
+# Instalar si es necesario:
+#install.packages("rio")
+#install.packages("srvyr")
+#install.packages("tidyverse")
+
+library(rio)
+library(srvyr)
+library(tidyverse)
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Descarga bases ECH 2021 (INE) de repositorio UMAD-FCS ###
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65232781fc021200aab6", 
+#  destfile = "ECH2021_sem1.Rdata"
+#)
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65616946a002027a4652", 
+#  destfile = "ECH2021_sem2_implant.Rdata"
+#)
+
+
+#download.file(
+#  url = "https://osf.io/dyzg8/files/osfstorage/63da65276946a001fe7a4630", 
+#  destfile = "ECH2021_sem2_panel.Rdata"
+#)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Carga de bases ###
+
+#load("ECH2021_sem1.Rdata")
+#sem1 <- x
+#load("ECH2021_sem2_implant.Rdata")
+#sem2_implant <- x
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Me quedo con los hogares donde hay uno y solo un jefe
+sem1 <- sem1 %>% dplyr::mutate(bc_correlat = numero)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_correlat = ID)
+
+
+sem1 <- sem1 %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+sem2_implant <- sem2_implant %>% dplyr::mutate(jefe = case_when(e30==1 ~ 1, e30!=1 ~ 0))
+
+sem1 <- sem1 %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+sem2_implant <- sem2_implant %>% group_by(bc_correlat) %>% mutate(sumjefe=sum(jefe)) %>% as.data.frame()
+
+sem1 <- sem1 %>%  filter(sumjefe==1)
+sem2_implant <- sem2_implant %>%  filter(sumjefe==1)
+
+
+### Generación de nuevas variables ###
+
+# Renombro edad
+
+sem1 <- sem1 %>% dplyr::mutate(bc_pe3 = E27)
+sem2_implant <- sem2_implant %>% dplyr::mutate(bc_pe3 = e27)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Cobertura de salud
+sem2_implant <- sem2_implant %>% dplyr::mutate(nocobert=case_when(e45_cv==7 ~ 1, e45_cv!=7 ~ 0)) 
+
+# Región
+sem1 <- sem1 %>% dplyr::mutate(bd_region = case_when(region_4 == 1 | region_4 == 2 ~ 1,
+                                                     region_4 == 3 ~ 2,
+                                                     region_4 == 4 ~ 3))
+
+sem2_implant <- sem2_implant %>% dplyr::mutate(bd_region = case_when(region_4 == 1 | region_4 == 2 ~ 1,
+                                                                     region_4 == 3 ~ 2,
+                                                                     region_4 == 4 ~ 3))
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+###Ponderador semestral
+sem1 <- sem1 %>% dplyr::mutate(pesosem = pesomen/6)
+sem2_implant <- sem2_implant %>% dplyr::mutate(pesosem = w_sem)
+
+### Bases a nivel hogar ###                               
+
+sem1_h <- sem1 %>% distinct(numero, .keep_all = TRUE)
+sem2_implant_h <- sem2_implant %>% distinct(ID, .keep_all = TRUE)
+
+
+### Información de muestreo ###
+
+sem1_svy           <- srvyr::as_survey_design(sem1, ids = bc_correlat, weights = pesosem)
+sem1_h_svy         <- srvyr::as_survey_design(sem1_h, ids = bc_correlat, weights = pesosem)
+
+sem2_implant_svy <- srvyr::as_survey_design(sem2_implant, ids = ID, weights = pesosem)
+sem2_implant_h_svy <- srvyr::as_survey_design(sem2_implant_h, ids = ID, weights = pesosem)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+### Estimación de indicadores 2021 ###
+
+
+### Porcentaje de niños entre 0 y 17 años sin cobertura de salud
+
+## Entre 0 y 5
+
+b_sem <- sem2_implant_svy %>%
+  filter(bd_region == 1 & bc_pe3< 6) %>%
+  srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+b_sem_0a6 <- as.numeric(b_sem$colname)
+
+##Entre 6 y 12
+
+b_sem <- sem2_implant_svy %>%
+  filter(bd_region == 1 & bc_pe3> 5 & bc_pe3<13) %>%
+  srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+b_sem_6a12 <- as.numeric(b_sem$colname)
+
+##Entre 13 y 17
+
+b_sem <- sem2_implant_svy %>%
+  filter(bd_region == 1 & bc_pe3> 12 & bc_pe3<18) %>%
+  srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+b_sem_13a17 <- as.numeric(b_sem$colname)
+
+
+
+c_ano <- cbind(b_sem_0a6, b_sem_6a12, b_sem_13a17)
+
+rownames(c_ano) <-    c("Sin cobertura de salud")
+colnames(c_ano)<- c("Entre 0 y 5","Entre 6 y 12", "Entre 13 y 17")
+estimacion2021 <- c_ano
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+
+```
 
 ## {.toc-ignore .unlisted .unnumbered}
 
