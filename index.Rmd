@@ -34,7 +34,7 @@ suppressPackageStartupMessages(library(kableExtra))
 suppressPackageStartupMessages(library(dplyr))
 
 
-base        <- readxl::read_excel("Data/Base motor_familia.xlsx")
+base        <- readxl::read_excel("Data/Base_Motor_familia_20052024.xlsx")
 base_fichas <- readxl::read_excel("Data/Fichas_Familia.xls")
 base_fichas <- base_fichas[order(base_fichas$ID),]
 
@@ -3480,6 +3480,8 @@ dat <-
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+    geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -3491,7 +3493,7 @@ g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
     values = c(639, "#a1dd70","orangered","lightslategrey"),
     labels = c("Urbano (menos de 5.000 habitantes)", "Urbano (más de 5.000 habitantes)", "Rural disperso", "Total país")) +
   ylim(0, 75) +
-  scale_x_continuous(breaks=seq(2006, 2022, 1)) +
+  scale_x_continuous(breaks=seq(2006, 2023, 1)) +
   labs(
     color = "",
     title = "",
@@ -3768,6 +3770,8 @@ dat <-
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+      geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   scale_color_manual(
     values = c(639, "#a1dd70", "darkorange"),
@@ -4034,6 +4038,8 @@ mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3",
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+      geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -4291,6 +4297,8 @@ dat <-
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+      geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -4554,6 +4562,8 @@ mutate(UNIDAD = factor(UNIDAD, levels = c("Quintil 1", "Quintil 2", "Quintil 3",
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+  geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -6299,6 +6309,8 @@ NOMINDICADOR=="Tasa de participación de mujeres y varones entre 14 y 49 años c
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=SEXO)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+  geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(dat = dat %>% filter(FECHA > 2019), size = 2, alpha= 0.8, show.legend = FALSE) +
   scale_color_manual(
     values = c("darkorange", 639)) +
@@ -7047,6 +7059,8 @@ dat <-
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=NOMINDICADOR)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+  geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   scale_color_manual(
     values = c("darkorange")) +
@@ -7253,6 +7267,8 @@ dat <-
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=NOMINDICADOR)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+  geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   scale_color_manual(
     values = c("darkorange")) +
@@ -7853,6 +7869,8 @@ NOMINDICADOR=="Porcentaje de niños entre 13 y 17 años sin cobertura de salud" 
 g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
   geom_line(dat = dat %>% filter(FECHA <= 2019),
             size = 1, alpha = 0.4) +
+    geom_line(dat = dat %>% filter(FECHA >= 2021),
+            size = 1, alpha = 0.8) +
   geom_point(size = 2, show.legend = FALSE) +
   scale_color_manual(
     values = c("darkorange", 639,"#a1dd70","darkseagreen3")) +
@@ -8102,7 +8120,7 @@ ggplot(aes(x = FECHA, y = VALOR)) +
   scale_color_manual(
     values = c("darkorange", 639)) +
   ylim(0, 40) +
-  scale_x_continuous(breaks=seq(1984, 2022, 2), limits=c(1984,2022))  +
+  scale_x_continuous(breaks=seq(1984, 2023, 5), limits=c(1984,2023))  +
   theme_minimal() +
   labs(
     color = "",
