@@ -539,7 +539,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "500")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -809,7 +809,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "500")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -1010,7 +1010,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "501")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -1283,7 +1283,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "501")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -1485,7 +1485,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "502")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -1757,7 +1757,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "502")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -1958,7 +1958,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "503")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -2231,7 +2231,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "503")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -2434,7 +2434,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "504")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -2705,7 +2705,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "504")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -2903,7 +2903,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "505")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -3168,7 +3168,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "505")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -3334,7 +3334,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "508")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -3578,7 +3578,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "508")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -3758,7 +3758,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "509")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -4003,7 +4003,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "509")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -4185,7 +4185,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "510")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -4427,7 +4427,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "510")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -4606,7 +4606,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "511")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -4847,7 +4847,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "511")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -5025,7 +5025,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "512")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -5268,7 +5268,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "512")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -5448,7 +5448,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "513")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -5691,7 +5691,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "513")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -5870,7 +5870,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "514")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -6116,7 +6116,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "514")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -6321,7 +6321,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "515")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -6586,7 +6586,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "515")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -6784,7 +6784,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "516")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -7064,7 +7064,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "516")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Composición y estructura de los hogares")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -7227,7 +7227,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "541")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -7462,7 +7462,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "541")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -7619,7 +7619,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "542")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -7851,7 +7851,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "542")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8009,7 +8009,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "543")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8242,7 +8242,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "543")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8399,7 +8399,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "544")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8633,7 +8633,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "544")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8766,7 +8766,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "560")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -8966,7 +8966,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "560")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9098,7 +9098,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "561")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9298,7 +9298,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "561")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9429,7 +9429,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "562")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9629,7 +9629,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "562")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9760,7 +9760,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "563")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -9960,7 +9960,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "563")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Salud infantil")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -10092,7 +10092,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "551")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -10292,7 +10292,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "551")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -10428,7 +10428,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "552")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "País urbano")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
@@ -10628,7 +10628,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 # Base motor
 
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CODIND = "552")
-BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Familia y composición de los hogares")
+BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(CATEGORIA = "Cuidados y educación")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PESTAÑA = "Total país")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(PAÍS = "Uruguay")
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(ANIO = 2023)
