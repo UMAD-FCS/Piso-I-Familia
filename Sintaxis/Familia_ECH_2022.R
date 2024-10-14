@@ -3838,14 +3838,14 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -4265,13 +4265,13 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -4685,13 +4685,13 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -5105,14 +5105,14 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -5528,14 +5528,14 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -5951,15 +5951,15 @@ a_reg <- function(x) {
 
 a_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   a_e_reg[i] <- a_reg(x = i)
 }     
 
 
 c_reg <- as.data.frame(a_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,1]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,1]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,1]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -8839,14 +8839,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -9171,14 +9171,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -9502,14 +9502,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -9833,14 +9833,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -10165,14 +10165,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -10501,14 +10501,14 @@ b_reg <- function(x) {
 
 b_e_reg <- numeric()
 
-for(i in 1:2){
+for(i in 1:3){
   b_e_reg[i] <- b_reg(x = i)
 }         
 
 c_reg <- as.data.frame(b_e_reg)
-c_reg_1 <- cbind(as.data.frame(c_reg[1,]), NOMINDICADOR, BASE_AUX)
+c_reg_1 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
 c_reg_1 <- c_reg_1 %>% dplyr::mutate(URBANORURALUY = "URBANO (MENOS DE 5.000 HABITANTES)")
-c_reg_2 <- cbind(as.data.frame(c_reg[2,]), NOMINDICADOR, BASE_AUX)
+c_reg_2 <- cbind(as.data.frame(c_reg[3,]), NOMINDICADOR, BASE_AUX)
 c_reg_2 <- c_reg_2 %>% dplyr::mutate(URBANORURALUY = "RURAL DISPERSO")
 colnames(c_reg_1) <- colnames(BASE_MOTOR)
 colnames(c_reg_2) <- colnames(BASE_MOTOR)
@@ -10695,11 +10695,14 @@ BASE = rbind(m500_pu, m500_tp, m501_pu, m501_tp, m502_pu,
 EDAD_HIJ <-"Todos"
 BASE <- cbind(BASE, EDAD_HIJ)
 colnames(BASE) <- c("CODIND",	"NOMINDICADOR",	"CATEGORIA",	"PESTAÑA",	"SEXO",	"ASCENDENCIA",	"QUINTIL",	"DEPARTAMENTOUY",	"URBANORURALUY",	"EDAD",	"POBRE",	"NSE",	"NIVELEDU",	"PAÍS",	"FECHA",	"VALOR",	"RESPONSABLE",	"EDAD_HIJ")
-Base_Motor_Familia  <- rio::import("Bases/Data_Umad/Base_Motor_familia_0623.xlsx")
-Base_Motor_Familia_0623  <- rbind(Base_Motor_Familia, BASE)
+
+rio::export(BASE, "Bases/Data_Umad/Base_2022_correc.xlsx" )
+
+#Base_Motor_Familia  <- rio::import("Bases/Data_Umad/Base_Motor_familia_0623.xlsx")
+#Base_Motor_Familia_0623  <- rbind(Base_Motor_Familia, BASE)
 #Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xls")
 #Base_Motor_Familia_12122022  <- rbind(Base_Motor_Familia, BASE)
-rio::export(Base_Motor_Familia_0623, "Bases/Data_Umad/Base_Motor_familia_0623.xlsx" )
+#rio::export(Base_Motor_Familia_0623, "Bases/Data_Umad/Base_Motor_familia_0623.xlsx" )
 
 
 

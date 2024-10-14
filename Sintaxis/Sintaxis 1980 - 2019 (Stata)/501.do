@@ -502,8 +502,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	
@@ -517,8 +517,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	
@@ -532,8 +532,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	}

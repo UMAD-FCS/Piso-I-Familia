@@ -18,9 +18,9 @@
 *                           UBICACIÓN DE ARCHIVOS      
 *======================================================================================*
 
-	cd "C:\Users\sharo\Dropbox\UMAD"
-	global bases "C:\Users\sharo\Dropbox\UMAD\Bases de datos\Encuesta Continua de Hogares (ECH)\Compatibilizadas IECON\Bases DESCA"
-	global tabulados "C:\Users\sharo\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
+	cd "C:\Users\Shari\Dropbox\UMAD"
+	global bases "C:\Users\Shari\Dropbox\UMAD\Bases de datos\Encuesta Continua de Hogares (ECH)\Compatibilizadas IECON\Bases DESCA"
+	global tabulados "C:\Users\Shari\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
 
 /*	cd "C:\Users\sharo\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD"
 	global bases "C:\Users\sharo\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO I_MICRODATOS\ECH\Microdatos\Compatibilizadas Iecon\En uso"
@@ -486,8 +486,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	
@@ -501,8 +501,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	
@@ -516,8 +516,8 @@ save "$tabulados\Auxiliares\\`codind'_TP.dta", replace
     matrix MATR  [`i',4]=  `x'
 	
 	local i  = `i' + 1
-	}
 	local j  = `j' + 1
+	}
 	}
     *
 	}

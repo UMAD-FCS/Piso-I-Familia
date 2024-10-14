@@ -17,10 +17,13 @@
 *                           UBICACIÓN DE ARCHIVOS      
 *======================================================================================*
 
-	cd "C:\Users\Usuario\Dropbox\UMAD"
-	global bases "C:\Users\Usuario\Dropbox\UMAD\Bases de datos\ENAJ"
-	global tabulados "C:\Users\Usuario\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
+	cd "C:\Users\Shari\Dropbox\UMAD"
+	*global bases "C:\Users\Shari\Dropbox\UMAD\Bases de datos\ENAJ"
+	global tabulados "C:\Users\Shari\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
 
+	
+	global bases "C:\Users\Shari\Dropbox\UMAD\Líneas de investigación\Redes\Procesamiento\Bases ENAJ"
+	
 /*	cd "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD"
 	global bases "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO I_MICRODATOS\ECH\Microdatos\Compatibilizadas Iecon\En uso"
 	global tabulados C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO II_MOTORES\Base web\3. Empleo, salarios y transferencias\Extracciones parciales
@@ -202,26 +205,20 @@
 */
 
 
-
-	g salida1=1 if a17_1==1|a21_1==1
-	g salida2=1 if a17_2==1|a21_2==1
-	g salida3=1 if a17_3==1|a21_3==1
-	g salida4=1 if a17_4==1|a21_4==1
-	g salida5=1 if a17_5==1|a21_5==1|a17_6==1|a21_6==1
-
-	replace salida1=0 if a17_1==2|a21_1==2
-	replace salida2=0 if a17_2==2|a21_2==2
-	replace salida3=0 if a17_3==2|a21_3==2
-	replace salida4=0 if a17_4==2|a21_4==2
-	replace salida5=0 if (a17_5==2|a21_5==2)&(a17_6==2|a21_6==2)
-
-	
 	g region=1 if region_4==1
 	replace region=2 if region_4==2
 	
 	keep if (region==1|region==2)&pedad>11&pedad<30
 
+
+	g salida_q=1 if a17_1==1|a21_1==1
+	replace salida_q=2 if a17_2==1|a21_2==1
+	replace salida_q=3 if a17_3==1|a21_3==1
+	replace salida_q=4 if a17_4==1|a21_4==1
+	replace salida_q=5 if a17_5==1|a21_5==1|a17_6==1|a21_6==1
+	ta salida_q, gen(salida)	
 	
+
 	foreach x of numlist 1/5 {
 	mean salida`x' [aw=peso] 
 	matrix MATR  [`i',1]= e(b)

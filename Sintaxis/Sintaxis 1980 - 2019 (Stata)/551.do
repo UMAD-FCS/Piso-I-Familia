@@ -18,13 +18,13 @@
 *                           UBICACIÓN DE ARCHIVOS      
 *======================================================================================*
 
-	cd "C:\Users\Usuario\Dropbox\UMAD"
-	global bases "C:\Users\Usuario\Dropbox\UMAD\Bases de datos\Encuesta Continua de Hogares (ECH)\Compatibilizadas IECON\Bases DESCA"
-	global tabulados "C:\Users\Usuario\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
+	cd "C:\Users\Shari\Dropbox\UMAD"
+	global bases "C:\Users\Shari\Dropbox\UMAD\Bases de datos\Encuesta Continua de Hogares (ECH)\Compatibilizadas IECON\Bases DESCA"
+	global tabulados "C:\Users\Shari\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
 
-/*	cd "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD"
-	global bases "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO I_MICRODATOS\ECH\Microdatos\Compatibilizadas Iecon\En uso"
-	global tabulados C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO II_MOTORES\Base web\3. Empleo, salarios y transferencias\Extracciones parciales
+/*	cd "C:\Users\Shari\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD"
+	global bases "C:\Users\Shari\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO I_MICRODATOS\ECH\Microdatos\Compatibilizadas Iecon\En uso"
+	global tabulados C:\Users\Shari\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO II_MOTORES\Base web\3. Empleo, salarios y transferencias\Extracciones parciales
 */
 	
 *======================================================================================*
@@ -58,6 +58,8 @@
 	matrix def       MATR= J(`filas',3,.)
 	matrix colnames  MATR= VALOR AUXILIAR ANIO
 
+	
+	local i=1
 	foreach anio of numlist $seieTOT  {
     use "$bases\fusionada_personasyhogares_`anio'.dta", clear
 	
@@ -90,7 +92,7 @@
 }
     *
 	
-	local j  = 	3
+	local j  = 	4
 	foreach val of numlist 1/2  {
 	mean asiste [aw=bc_pesoan] if bc_pe2==`val'
 	matrix MATR  [`i',1]=  e(b)
@@ -102,7 +104,7 @@
 }
     *
 	
-	local j  = 	5
+	local j  = 	6
 	foreach val of numlist 1/2  {
 	mean asiste [aw=bc_pesoan] if bd_e29_1==`val'
 	matrix MATR  [`i',1]=  e(b)
@@ -114,7 +116,7 @@
 	}
     *
 	
-	local j  = 	7
+	local j  = 	8
 	foreach val of numlist 1/5  {
 	mean asiste [aw=bc_pesoan] if bd_quintilesy==`val'
 	matrix MATR  [`i',1]=  e(b)
@@ -126,7 +128,7 @@
 	}
     *
 	
-	local j  = 	12
+	local j  = 	13
 	foreach val of numlist 0/1  {
 	mean asiste [aw=bc_pesoan] if pobre06==`val'
 	matrix MATR  [`i',1]=  e(b)
@@ -171,6 +173,7 @@ g ASCENDENCIA    		 = "NA"
 g QUINTIL       		 = "NA"
 g DEPARTAMENTOUY		 = "NA"
 g URBANORURALUY 		 = "NA"
+g POBRE 				 = "NA"
 g PAÍS			 		 = "URUGUAY"
 g RESPONSABLE			 = "SHARON KATZKOWICZ"
 
@@ -195,8 +198,8 @@ replace QUINTIL			 = "QUINTIL 3"							  if AUXILIAR==10
 replace QUINTIL			 = "QUINTIL 4"							  if AUXILIAR==11
 replace QUINTIL			 = "QUINTIL 5"							  if AUXILIAR==12
 
-replace NOMINDICADOR    = NOMINDICADOR+ ". Hogares no en situación de pobreza"    if AUXILIAR==13
-replace NOMINDICADOR    = NOMINDICADOR+ ". Hogares en situación de pobreza"       if AUXILIAR==14
+replace POBRE    = "Hogares no en situación de pobreza"    if AUXILIAR==13
+replace POBRE    = "Hogares en situación de pobreza"       if AUXILIAR==14
  
 
 ** 
