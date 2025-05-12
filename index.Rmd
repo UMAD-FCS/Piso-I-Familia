@@ -34,7 +34,8 @@ suppressPackageStartupMessages(library(kableExtra))
 suppressPackageStartupMessages(library(dplyr))
 
 
-base        <- readxl::read_excel("Data/Base_Motor_familia_20052024.xlsx")
+#base        <- readxl::read_excel("Data/Base_Motor_familia.xlsx")
+base        <- readxl::read_excel("Data/PRUEBAS/Base_motor.xls")
 base_fichas <- readxl::read_excel("Data/Fichas_Familia.xls")
 base_fichas <- base_fichas[order(base_fichas$ID),]
 
@@ -2946,14 +2947,14 @@ En el siguiente gráfico se observa que mientras el porcentaje de personas solte
 dat <- 
   base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)" ~ "Unión libre", 
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)" ~ "Divorciada/o o separada/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
@@ -2994,14 +2995,14 @@ g1
 t1 <- 
   base %>% filter((NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)"|
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)"|
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)"|
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)"), URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Unión libre)" ~ "Unión libre", 
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Casada/o)" ~ "Casada/o",
-NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)" ~ "Divorciada/o o separada/o",
+NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)" ~ "Divorciada/o o separada/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Viuda/o)" ~ "Viuda/o",
 NOMINDICADOR =="Distribución porcentual de las personas según estado conyugal (Soltera/o)" ~ "Soltera/o"))  %>%
   mutate(UNIDAD = factor(UNIDAD, levels = c("Unión libre", "Casada/o", "Divorciada/o o separada/o","Viuda/o", "Soltera/o")))  %>%
@@ -3137,7 +3138,7 @@ for (i in 1:6) {
 colnames(c_ano) <- c("VALOR")
 rownames(c_quintil) <-   c("Unión libre)", 
                            "Casada/o",
-                           "Divorciada/o o serparada/o",
+                           "Divorciada/o o separada/o",
                            "Viuda/o",
                            "Soltera/o"))
 estimacion2022 <- c_ano
@@ -3493,7 +3494,7 @@ g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=UNIDAD)) +
     values = c(639, "#a1dd70","orangered","lightslategrey"),
     labels = c("Urbano (menos de 5.000 habitantes)", "Urbano (más de 5.000 habitantes)", "Rural disperso", "Total país")) +
   ylim(0, 75) +
-  scale_x_continuous(breaks=seq(2006, 2023, 1)) +
+  scale_x_continuous(breaks=seq(2006, 2024, 1)) +
   labs(
     color = "",
     title = "",
@@ -4816,7 +4817,7 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
+                  SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", URBANORURALUY == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -4841,7 +4842,7 @@ g1 <-
   )
 ggplotly(g1) %>% 
   config(displayModeBar = F) %>%
-  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1,orientation = "h", xanchor = "center" )) 
+  layout(margin = list(b = 100), legend = list(x = 0.5, y = -0.1, orientation = "h", xanchor = "center" )) 
 
 
 #===============================================================================
@@ -4855,7 +4856,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "Total país", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
+                  SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", URBANORURALUY == "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -4934,7 +4935,7 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
+                  ASCENDENCIA == "Todos", QUINTIL == "Todos", SEXO != "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -4973,7 +4974,7 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter((CODIND==518), 
-                  URBANORURALUY == "Total país", ASCENDENCIA == "Todos", QUINTIL == "Todos") %>%
+                  ASCENDENCIA == "Todos", QUINTIL == "Todos", SEXO != "Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y volvieron" ~ "Salida del hogar de origen y volvieron", 
                             NOMINDICADOR== "Porcentaje de jóvenes y adolescentes que se fueron de su hogar de origen y no volvieron" ~ "Salida del hogar de origen y no nolvieron", 
@@ -7064,7 +7065,7 @@ g1<-  ggplot(dat, aes(x = FECHA, y = VALOR, alpha=metodo, color=NOMINDICADOR)) +
   geom_point(size = 2, show.legend = FALSE) +
   scale_color_manual(
     values = c("darkorange")) +
-  ylim(0, 50) +
+  ylim(0, 55) +
   scale_x_continuous(breaks=seq(2012, max, 1), limits=c(2012,max))  +
   theme_minimal() +
   theme(legend.position = "bottom",
@@ -7484,12 +7485,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1<-
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
-URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -7498,7 +7499,7 @@ URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
   ) +
   facet_wrap(~FECHA) +
   ylim(0, 75) +
-  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "Todos")) +
+  scale_x_discrete(labels = c("Montevideo", "Interior urbano", "País urbano")) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(
@@ -7522,12 +7523,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de niños lactantes que reciben lactancia exclusiva durante los primeros 6 meses", 
-URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbanos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="País urbano" ~ "País urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -7608,12 +7609,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
-URBANORURALUY == "Total país"| URBANORURALUY=="Montevideo"| URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="País urbano" ~ "País urbano",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -7646,12 +7647,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con bajo peso al nacer", 
-URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]
@@ -7729,12 +7730,12 @@ periodo_formatted <- paste(
 #===============================================================================
 g1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
-URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
   mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   mutate(FECHA = factor(FECHA, levels = c("2013", "2018")))  %>%
   ggplot(aes(x = UNIDAD, y = VALOR, fill=UNIDAD)) +
   geom_bar(stat="identity", width=0.3)+
@@ -7768,12 +7769,12 @@ ggplotly(g1) %>%
 ```{r}
 t1 <- 
   base %>% filter(NOMINDICADOR=="Porcentaje de nacidos vivos con macrosomía", 
-URBANORURALUY == "Total país"|URBANORURALUY=="Montevideo"|URBANORURALUY=="Interior urbano", SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
+SEXO == "Todos", ASCENDENCIA == "Todos", QUINTIL == "Todos", EDAD=="Todos", POBRE=="Todos") %>%
   mutate(VALOR = round(as.numeric(VALOR)*100,1)) %>% 
-  mutate(UNIDAD = case_when(URBANORURALUY=="Total país" ~ "Todos",
+  mutate(UNIDAD = case_when(URBANORURALUY=="País urbano" ~ "País urbano",
 URBANORURALUY=="Montevideo" ~ "Montevideo",
-URBANORURALUY=="Interior urbano" ~ "Interior urbano"))  %>%
-  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "Todos")))  %>%
+URBANORURALUY=="Urbano (más de 5.000 habitantes)" ~ "Interior urbano"))  %>%
+  mutate(UNIDAD = factor(UNIDAD, levels = c("Montevideo", "Interior urbano", "País urbano")))  %>%
   rename(ANIO = FECHA)
 t1 <- t1 [,c("NOMINDICADOR","PAÍS", "UNIDAD", "ANIO","VALOR")]
 #t1 <- t1[order(t1$SEXO, t1$ANIO), ]

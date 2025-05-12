@@ -17,9 +17,9 @@
 *                           UBICACIÓN DE ARCHIVOS      
 *======================================================================================*
 
-	cd "C:\Users\Usuario\Dropbox\UMAD"
-	global bases "C:\Users\Usuario\Dropbox\UMAD\Bases de datos\ENAJ"
-	global tabulados "C:\Users\Usuario\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
+	cd "C:\Users\sharo\Dropbox\UMAD"
+	global bases "C:\Users\sharo\Dropbox\UMAD\Bases de datos\ENAJ"
+	global tabulados "C:\Users\sharo\Dropbox\UMAD\Sociodemografico\Familia\Tabulados"
 
 /*	cd "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD"
 	global bases "C:\Users\Usuario\Dropbox\1. Unidad de Métodos y Acceso a Datos\1. Observatorio UMAD\PISO I_MICRODATOS\ECH\Microdatos\Compatibilizadas Iecon\En uso"

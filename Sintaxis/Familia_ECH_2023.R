@@ -2778,7 +2778,7 @@ ech_svy_1 <- ech_svy %>%
 NOMINDICADOR <- 
   c("Distribución porcentual de las personas según estado conyugal (Unión libre)", 
     "Distribución porcentual de las personas según estado conyugal (Casada/o)",
-    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)",
+    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)",
     "Distribución porcentual de las personas según estado conyugal (Viuda/o)",
     "Distribución porcentual de las personas según estado conyugal (Soltera/o)")
 
@@ -2961,7 +2961,7 @@ ech_svy_1 <- ech_svy %>%
 NOMINDICADOR <- 
   c("Distribución porcentual de las personas según estado conyugal (Unión libre)", 
     "Distribución porcentual de las personas según estado conyugal (Casada/o)",
-    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)",
+    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)",
     "Distribución porcentual de las personas según estado conyugal (Viuda/o)",
     "Distribución porcentual de las personas según estado conyugal (Soltera/o)")
 
@@ -10697,14 +10697,12 @@ BASE <- cbind(BASE, EDAD_HIJ)
 colnames(BASE) <- c("CODIND",	"NOMINDICADOR",	"CATEGORIA",	"PESTAÑA",	"SEXO",	"ASCENDENCIA",	"QUINTIL",	"DEPARTAMENTOUY",	"URBANORURALUY",	"EDAD",	"POBRE",	"NSE",	"NIVELEDU",	"PAÍS",	"FECHA",	"VALOR",	"RESPONSABLE",	"EDAD_HIJ")
 
 
+rio::export(BASE, "Data/PRUEBAS/ECH_2023.xlsx")
 
 
-rio::export(BASE, "ECH_2023_CORREC.xlsx" )
-
-
-#Base_Motor_Familia  <- rio::import("Versión pervia web/Base motor_familia_2023.xlsx")
-
-#Base_Motor_Familia_0524  <- rbind(Base_Motor_Familia, BASE)
+# #Base_Motor_Familia  <- rio::import("Versión pervia web/Base motor_familia_2023.xlsx")
+# Base_Motor_Familia  <- rio::import("Data/Pruebas/Base_Motor_familia_23.xlsx"
+# #Base_Motor_Familia_0524  <- rbind(Base_Motor_Familia, BASE)
 
 
 #rio::export(Base_Motor_Familia_0524, "Export actualiza 2024/Base_Motor_familia_20052024.xlsx" )

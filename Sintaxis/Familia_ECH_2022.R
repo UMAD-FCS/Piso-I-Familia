@@ -2778,7 +2778,7 @@ ech22_svy_1 <- ech22_svy %>%
 NOMINDICADOR <- 
   c("Distribución porcentual de las personas según estado conyugal (Unión libre)", 
     "Distribución porcentual de las personas según estado conyugal (Casada/o)",
-    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)",
+    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)",
     "Distribución porcentual de las personas según estado conyugal (Viuda/o)",
     "Distribución porcentual de las personas según estado conyugal (Soltera/o)")
 
@@ -2961,7 +2961,7 @@ ech22_svy_1 <- ech22_svy %>%
 NOMINDICADOR <- 
   c("Distribución porcentual de las personas según estado conyugal (Unión libre)", 
     "Distribución porcentual de las personas según estado conyugal (Casada/o)",
-    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o serparada/o)",
+    "Distribución porcentual de las personas según estado conyugal (Divorciada/o o separada/o)",
     "Distribución porcentual de las personas según estado conyugal (Viuda/o)",
     "Distribución porcentual de las personas según estado conyugal (Soltera/o)")
 
@@ -10696,27 +10696,10 @@ EDAD_HIJ <-"Todos"
 BASE <- cbind(BASE, EDAD_HIJ)
 colnames(BASE) <- c("CODIND",	"NOMINDICADOR",	"CATEGORIA",	"PESTAÑA",	"SEXO",	"ASCENDENCIA",	"QUINTIL",	"DEPARTAMENTOUY",	"URBANORURALUY",	"EDAD",	"POBRE",	"NSE",	"NIVELEDU",	"PAÍS",	"FECHA",	"VALOR",	"RESPONSABLE",	"EDAD_HIJ")
 
-rio::export(BASE, "Bases/Data_Umad/Base_2022_correc.xlsx" )
+rio::export(BASE, "Data/PRUEBAS/Base_2022.xlsx")
 
-#Base_Motor_Familia  <- rio::import("Bases/Data_Umad/Base_Motor_familia_0623.xlsx")
-#Base_Motor_Familia_0623  <- rbind(Base_Motor_Familia, BASE)
-#Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xls")
-#Base_Motor_Familia_12122022  <- rbind(Base_Motor_Familia, BASE)
-#rio::export(Base_Motor_Familia_0623, "Bases/Data_Umad/Base_Motor_familia_0623.xlsx" )
-
-
-
-
-
-
-
-
-BASE = rbind(m551_pu, m551_tp, m552_pu, m552_tp)
-EDAD_HIJ <-"Todos"
-BASE <- cbind(BASE, EDAD_HIJ)
-colnames(BASE) <- c("CODIND",	"NOMINDICADOR",	"CATEGORIA",	"PESTAÑA",	"SEXO",	"ASCENDENCIA",	"QUINTIL",	"DEPARTAMENTOUY",	"URBANORURALUY",	"EDAD",	"POBRE",	"NSE",	"NIVELEDU",	"PAÍS",	"FECHA",	"VALOR",	"RESPONSABLE",	"EDAD_HIJ")
-Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xlsx")
-Base_Motor_Familia_0623  <- rbind(Base_Motor_Familia, BASE)
-#Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xls")
-#Base_Motor_Familia_12122022  <- rbind(Base_Motor_Familia, BASE)
-rio::export(Base_Motor_Familia_0623, "Bases/Data_Umad/Base_Motor_familia_0623.xlsx" )
+# Base_Motor_Familia  <- rio::import("Data/PRUEBAS/Base_motor.xls")
+# Base_Motor_Familia_23  <- rbind(Base_Motor_Familia, BASE)
+# #Base_Motor_Familia  <- rio::import("Data/Base motor_familia.xls")
+# #Base_Motor_Familia_12122022  <- rbind(Base_Motor_Familia, BASE)
+# rio::export(Base_Motor_Familia_23, "Data/Pruebas/Base_Motor_familia_23.xlsx" )
