@@ -62,6 +62,11 @@ ech <- ech %>% dplyr::mutate(pobre_aux = case_when(pobre06 == 0 ~ 2,
                                                    pobre06 == 1 ~ 1))
                                                    
 
+ech <- ech %>% dplyr::mutate(pobre_aux2 = case_when(pobre17 == 0 ~ 2,
+                                                    pobre17 == 1 ~ 1))
+
+
+
 # Región
 ech <- ech %>% dplyr::mutate(bd_region = case_when(REGION_4 == 1 | REGION_4 == 2 ~ 1,
                                                    REGION_4 == 3 ~ 2,
@@ -780,6 +785,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -804,6 +810,35 @@ c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 8, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
 
 
 # Base motor
@@ -842,6 +877,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
                                            
 
@@ -1253,6 +1290,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_men_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -1279,6 +1317,31 @@ colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_men_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 8, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -1317,6 +1380,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -1727,6 +1792,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -1753,6 +1819,33 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 8, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -1791,6 +1884,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -2202,6 +2297,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -2223,6 +2319,32 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 7, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -2264,6 +2386,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -2676,6 +2800,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -2701,6 +2826,31 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 6, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -2738,6 +2888,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -3139,6 +3291,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -3164,6 +3317,31 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+b_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+b_e_pobre = matrix(, nrow = 5, ncol = 2)
+
+for(i in 1:2){
+  b_e_pobre[,i] <- b_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -3201,6 +3379,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -3548,6 +3728,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_svy, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -3574,6 +3755,32 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_svy, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 2, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -3609,6 +3816,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -3976,6 +4185,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x) %>%
@@ -3999,6 +4209,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -4036,6 +4269,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -4400,6 +4635,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x) %>%
@@ -4423,6 +4659,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -4460,6 +4719,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -4820,6 +5081,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x) %>%
@@ -4843,6 +5105,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -4880,6 +5165,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -5241,6 +5528,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x) %>%
@@ -5260,6 +5548,30 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(menorH))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -5301,6 +5613,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -5664,6 +5978,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x) %>%
@@ -5687,6 +6002,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(may64h))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -5724,6 +6062,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -6089,6 +6429,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(x) {
   x <- ech_h_svy %>%
     filter(pobre_aux == x & is.na(n_int)==F) %>%
@@ -6112,6 +6453,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(x) {
+  x <- ech_h_svy %>%
+    filter(pobre_aux2 == x & is.na(n_int)==F) %>%
+    srvyr::group_by(mes) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(n_int))
+  x <- mean(x$colname)
+}       
+
+a_e_pobre <- numeric()
+
+for(i in 1:2){
+  a_e_pobre[i] <- a_pobre(x = i)
+}     
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -6149,6 +6513,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -6557,6 +6923,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -6578,6 +6945,32 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 5, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -6619,6 +7012,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -7030,6 +7425,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_h_men_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -7051,6 +7447,32 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_h_men_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 8, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -7098,6 +7520,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -7432,6 +7856,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -7458,6 +7883,32 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 2, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -7493,6 +7944,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -7822,6 +8275,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -7843,6 +8297,32 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 2, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -7882,6 +8362,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -8213,6 +8695,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -8238,6 +8721,31 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 2, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -8273,6 +8781,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -8604,6 +9114,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 a_pobre <- function(y) {
   base <- subset(ech_svy_1, pobre_aux == y) 
   resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
@@ -8629,6 +9140,31 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+a_pobre <- function(y) {
+  base <- subset(ech_svy_1, pobre_aux2 == y) 
+  resultados  <-  sapply(base$variables %>% select(all_of(var_int)), function(x){
+    base %>%
+      srvyr::summarise(stat1 = srvyr::survey_mean(x, na.rm = TRUE))
+    
+  })
+  y <- as.numeric(resultados[1,])
+}
+
+a_e_pobre = matrix(, nrow = 2, ncol = 2)
+
+for(i in 1:2){
+  a_e_pobre[,i] <- a_pobre(y = i)
+}
+
+c_pobre <- as.data.frame(a_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[,1]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[,2]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -8664,6 +9200,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "Menor de 30
                                                             EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -8940,6 +9478,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3< 6) %>%
@@ -8962,6 +9501,28 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3< 6) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -8995,6 +9556,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -9272,6 +9835,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3> 5 & bc_pe3<13) %>%
@@ -9290,6 +9854,29 @@ c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
 c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE")
 c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
 c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
+
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3> 5 & bc_pe3<13) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
 colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
@@ -9327,6 +9914,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -9603,6 +10192,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3> 12 & bc_pe3<18) %>%
@@ -9625,6 +10215,28 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3> 12 & bc_pe3<18) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -9658,6 +10270,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -9934,6 +10548,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3<18) %>%
@@ -9956,6 +10571,28 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3<18) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(nocobert))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -9989,6 +10626,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -10266,6 +10905,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3<3) %>%
@@ -10288,6 +10928,28 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3<3) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(asiste))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -10321,6 +10983,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
@@ -10602,6 +11266,7 @@ BASE_MOTOR <- rbind(BASE_MOTOR,c_quintil_1,c_quintil_2, c_quintil_3, c_quintil_4
 
 # Pobreza
 
+#Metodología 2006
 b_pobre <- function(x) {
   x <- ech_svy %>%
     filter(pobre_aux == x & bc_pe3>2&bc_pe3<6) %>%
@@ -10624,6 +11289,29 @@ colnames(c_pobre_1) <- colnames(BASE_MOTOR)
 colnames(c_pobre_2) <- colnames(BASE_MOTOR)
 BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
+
+#Metodología 2017
+b_pobre <- function(x) {
+  x <- ech_svy %>%
+    filter(pobre_aux2 == x & bc_pe3>2&bc_pe3<6) %>%
+    srvyr::summarise(colname = srvyr::survey_mean(asiste))
+  x <- mean(x$colname)
+}       
+
+b_e_pobre <- numeric()
+
+for(i in 1:2){
+  b_e_pobre[i] <- b_pobre(x = i)
+}         
+
+c_pobre <- as.data.frame(b_e_pobre)
+c_pobre_1 <- cbind(as.data.frame(c_pobre[1,]), NOMINDICADOR, BASE_AUX)
+c_pobre_1 <- c_pobre_1 %>% dplyr::mutate(POBRE = "POBRE - MET 2017")
+c_pobre_2 <- cbind(as.data.frame(c_pobre[2,]), NOMINDICADOR, BASE_AUX)
+c_pobre_2 <- c_pobre_2 %>% dplyr::mutate(POBRE = "NO POBRE - MET 2017")
+colnames(c_pobre_1) <- colnames(BASE_MOTOR)
+colnames(c_pobre_2) <- colnames(BASE_MOTOR)
+BASE_MOTOR <- rbind(BASE_MOTOR,c_pobre_1,c_pobre_2)
 
 # Base motor
 
@@ -10657,6 +11345,8 @@ BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(QUINTIL = case_when(QUINTIL == "Quint
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(EDAD = case_when(EDAD == "" ~ "Todos"))
 BASE_MOTOR <- BASE_MOTOR %>% dplyr::mutate(POBRE = case_when(POBRE == "POBRE" ~ "Pobre", 
                                                              POBRE == "NO POBRE" ~ "No pobre",
+                                                             POBRE == "POBRE - MET 2017" ~ "Pobre - Met 2017",
+                                                             POBRE == "NO POBRE - MET 2017" ~ "No pobre - Met 2017",
                                                              POBRE == "" ~ "Todos"))
 
 
