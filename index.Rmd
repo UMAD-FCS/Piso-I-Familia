@@ -34,8 +34,8 @@ suppressPackageStartupMessages(library(kableExtra))
 suppressPackageStartupMessages(library(dplyr))
 
 
-#base        <- readxl::read_excel("Data/Base_Motor_familia.xlsx")
-base        <- readxl::read_excel("Data/PRUEBAS/Base_motor.xls")
+base        <- readxl::read_excel("Data/Base_Motor_familia.xlsx")
+#base        <- readxl::read_excel("Data/PRUEBAS/Base_motor.xls")
 base_fichas <- readxl::read_excel("Data/Fichas_Familia.xls")
 base_fichas <- base_fichas[order(base_fichas$ID),]
 
@@ -8121,7 +8121,7 @@ ggplot(aes(x = FECHA, y = VALOR)) +
   scale_color_manual(
     values = c("darkorange", 639)) +
   ylim(0, 40) +
-  scale_x_continuous(breaks=seq(1984, 2023, 5), limits=c(1984,2023))  +
+  scale_x_continuous(breaks=seq(1984, 2025, 5), limits=c(1984,2025))  +
   theme_minimal() +
   labs(
     color = "",
